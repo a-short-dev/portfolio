@@ -1,101 +1,253 @@
+import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import Image from "next/image";
+import Link from "next/link";
+import { BsUbuntu } from "react-icons/bs";
+import { DiReact } from "react-icons/di";
+import {
+  FaDocker,
+  FaGit,
+  FaHtml5,
+  FaJava,
+  FaLinkedinIn,
+  FaNodeJs,
+  FaPhp,
+  FaXTwitter,
+} from "react-icons/fa6";
+import { IoLogoJavascript } from "react-icons/io";
+import { RiTailwindCssLine } from "react-icons/ri";
+import { SiAndroidstudio, SiNestjs, SiNginx } from "react-icons/si";
+import { TbBrandReactNative } from "react-icons/tb";
+
+const Projects: ProductCardProps[] = [
+  {
+    url: "https://freelance-pro-six.vercel.app/",
+    title: "Freelance Pro",
+    description: "Invoice generating and tracking",
+    img: "/projects/freelance.png",
+    type: "personal",
+  },
+  {
+    url: "https://cona.vercel.app/",
+    title: "Cona",
+    description: "Demo webiste for nft",
+    img: "/projects/cona.png",
+    type: "personal",
+  },
+
+  {
+    url: "https://www.npmjs.com/package/fintava",
+    title: "Fintava SDK Libray",
+    description: "Open source library for fintava payment gatewatey.",
+    img: "/projects/cona.png",
+    type: "opensource",
+  },
+];
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="p-5 md:p-8 w-full">
+      <main>
+        <section className="w-full flex items-center min-h-screen">
+          <div>
+            <h1 className="text-5xl text-white lg:text-7xl mb-2 font-marlish font-semibold">
+              Hi I&apos;m Leke!
+            </h1>
+            <p className="text-base md:text-lg text-gray-200 font-sans font-medium">
+              Full-stack developer focusing on Javascript, Typescript,{" "}
+              <span className="text-gray-500">Open Source and DevOps.</span>
+            </p>
+            <p className="text-base font-marlish text-gray-200">
+              Curious to how things work, user eccentric full-stack developer,
+              team leader, always ready learn and build amazing products.
+            </p>
+            <div className="flex items-center gap-2 mt-6">
+              <Link
+                href="https://github.com/a-short-dev"
+                className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-xl font-semibold max-w-sm wpfull shadow-lg"
+              >
+                <FaGit />
+              </Link>
+              <Link
+                href="https://www.linkedin.com/in/ashortdev/"
+                className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-xl font-semibold max-w-sm wpfull shadow-lg"
+              >
+                <FaLinkedinIn />
+              </Link>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+              <Link
+                href="https://x.com/a_short_dev"
+                className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-xl font-semibold max-w-sm wpfull shadow-lg"
+              >
+                <FaXTwitter />
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        <section className="space-y-10">
+          <h4 className="text-3xl font-sans font-semibold text-gray-500">
+            PROJECTS
+          </h4>
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2  md:gap-3 lg:grid-cols-3 w-full">
+            {Projects.map((project) => (
+              <ProjectCard
+                key={project.title}
+                title={project.title}
+                img={project.img}
+                url={project.url}
+                description={project.description}
+                type={project.type}
+              />
+            ))}
+          </div>
+        </section>
+
+        <section className="space-y-10 py-20">
+          <h4 className="text-3xl font-sans font-semibold text-gray-500">
+            SKILLS &amp; TOOLS
+          </h4>
+          <div className="flex flex-wrap gap-4 items- justify-center md:gap-9 w-full">
+            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
+              <FaHtml5 />
+            </div>
+            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
+              <IoLogoJavascript />
+            </div>
+            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
+              <FaJava />
+            </div>
+            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
+              <FaGit />
+            </div>
+            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
+              <DiReact />
+            </div>
+            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
+              <FaNodeJs />
+            </div>{" "}
+            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
+              <RiTailwindCssLine />
+            </div>
+            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
+              <FaPhp />
+            </div>
+            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
+              <TbBrandReactNative />
+            </div>
+            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
+              <SiNestjs />
+            </div>
+            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
+              <SiAndroidstudio />
+            </div>
+            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
+              <BsUbuntu />
+            </div>
+            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
+              <SiNginx />
+            </div>
+            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
+              <FaDocker />
+            </div>
+          </div>
+        </section>
+
+        <section className="space-y-10 py-20">
+          <h4 className="text-3xl font-sans font-semibold text-gray-500">
+            HIRE ME
+          </h4>
+          <div className="flex flex-wrap gap-4 items- justify-center md:gap-9 w-full">
+            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
+              <FaHtml5 />
+            </div>
+            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
+              <IoLogoJavascript />
+            </div>
+            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
+              <FaJava />
+            </div>
+            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
+              <FaGit />
+            </div>
+            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
+              <DiReact />
+            </div>
+            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
+              <FaNodeJs />
+            </div>{" "}
+            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
+              <RiTailwindCssLine />
+            </div>
+            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
+              <FaPhp />
+            </div>
+            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
+              <TbBrandReactNative />
+            </div>
+            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
+              <SiNestjs />
+            </div>
+            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
+              <SiAndroidstudio />
+            </div>
+            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
+              <BsUbuntu />
+            </div>
+            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
+              <SiNginx />
+            </div>
+            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
+              <FaDocker />
+            </div>
+          </div>
+        </section>
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
 }
+
+export type ProductCardProps = {
+  title: string;
+  img: string;
+  url: string;
+  type: "contract" | "personal" | "opensource";
+  description?: string;
+};
+
+const ProjectCard: React.FC<ProductCardProps> = ({
+  title,
+  img,
+  url,
+  type,
+  description,
+}) => {
+  return (
+    <Card className={cn("bg-gray-800 text-white border-none shadow-sm")}>
+      <Image
+        src={img}
+        alt="cona"
+        width={300}
+        height={300}
+        className="object-center w-full"
+      />
+
+      <div className="h-40 px-4 py-3 flex flex-col justify-between">
+        <div className="space-y-2">
+          <Link href={url}>
+            <h1 className="text-2xl font-marlish mb-1 font-normal md:text-3xl">
+              {title}
+            </h1>
+          </Link>
+          <p className="font-sans text-xs font-medium text-gray-300">
+            {description}
+          </p>
+        </div>
+
+        <div className="flex items-center font-semibold text-sm capitalize font-sans">
+          <span className="bg-gray-400 p-2 rounded ">{type}</span>
+        </div>
+      </div>
+    </Card>
+  );
+};
