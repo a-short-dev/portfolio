@@ -35,13 +35,27 @@ const Projects: ProductCardProps[] = [
     img: "/projects/cona.png",
     type: "personal",
   },
-
   {
     url: "https://www.npmjs.com/package/fintava",
     title: "Fintava SDK Libray",
     description: "Open source library for fintava payment gatewatey.",
     img: "/projects/cona.png",
     type: "opensource",
+  },
+
+  {
+    url: "",
+    title: "TwentyFirst Styling",
+    description: "Ecommerce Fashion Desgin store",
+    img: "/projects/twenty.png",
+    type: "contract",
+  },
+  {
+    url: "https://bestrates-frontend.vercel.app/",
+    title: "BestRates Digitals",
+    description: "WebApp for giftcard and crypto trading",
+    img: "/projects/best.png",
+    type: "contract",
   },
 ];
 
@@ -158,7 +172,6 @@ export default function Home() {
           <h4 className="text-3xl font-sans font-semibold text-gray-500">
             Abilities
           </h4>
-          
         </section>
 
         <section className="space-y-10 py-10 lg:py-20 w-full">
