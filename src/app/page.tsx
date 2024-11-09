@@ -1,3 +1,4 @@
+import HireMeForm from "@/components/hire-me-form";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
@@ -48,7 +49,7 @@ export default function Home() {
   return (
     <div className="p-5 md:p-8 w-full">
       <main>
-        <section className="w-full flex items-center min-h-screen">
+        <section className="w-full flex items-center min-h-[90svh] top-20 relative  lg:min-h-screen">
           <div>
             <h1 className="text-5xl text-white lg:text-7xl mb-2 font-marlish font-semibold">
               Hi I&apos;m Leke!
@@ -155,52 +156,16 @@ export default function Home() {
 
         <section className="space-y-10 py-20">
           <h4 className="text-3xl font-sans font-semibold text-gray-500">
+            Abilities
+          </h4>
+          
+        </section>
+
+        <section className="space-y-10 py-10 lg:py-20 w-full">
+          <h4 className="text-3xl font-sans font-semibold text-gray-500">
             HIRE ME
           </h4>
-          <div className="flex flex-wrap gap-4 items- justify-center md:gap-9 w-full">
-            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
-              <FaHtml5 />
-            </div>
-            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
-              <IoLogoJavascript />
-            </div>
-            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
-              <FaJava />
-            </div>
-            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
-              <FaGit />
-            </div>
-            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
-              <DiReact />
-            </div>
-            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
-              <FaNodeJs />
-            </div>{" "}
-            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
-              <RiTailwindCssLine />
-            </div>
-            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
-              <FaPhp />
-            </div>
-            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
-              <TbBrandReactNative />
-            </div>
-            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
-              <SiNestjs />
-            </div>
-            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
-              <SiAndroidstudio />
-            </div>
-            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
-              <BsUbuntu />
-            </div>
-            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
-              <SiNginx />
-            </div>
-            <div className="flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg">
-              <FaDocker />
-            </div>
-          </div>
+          <HireMeForm />
         </section>
       </main>
     </div>
