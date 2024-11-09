@@ -30,7 +30,23 @@ export default function HireMeForm() {
     },
   });
 
-  const handleSubmit: SubmitHandler<z.infer<typeof formSchema>> = (data) => {};
+  const handleSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (
+    data
+  ) => {
+    try {
+      await fetch("/api/send/", {
+        method: "POST",
+        body: JSON.stringify(data),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          form.reset();
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <Form {...form}>
       <form
@@ -48,7 +64,7 @@ export default function HireMeForm() {
                   <Input
                     {...field}
                     type="text"
-                    className="w-full placeholder:text-sm"
+                    className="w-full placeholder:text-sm text-black"
                     placeholder="Enter your name"
                   />
                 </FormControl>
@@ -66,7 +82,7 @@ export default function HireMeForm() {
                   <Input
                     {...field}
                     type="email"
-                    className="w-full placeholder:text-sm"
+                    className="w-full placeholder:text-sm text-black"
                     placeholder="Enter your email"
                   />
                 </FormControl>
@@ -83,7 +99,7 @@ export default function HireMeForm() {
                 <FormControl>
                   <Textarea
                     {...field}
-                    className="w-full placeholder:text-sm"
+                    className="w-full placeholder:text-sm text-blacke"
                     placeholder="Type your message here"
                   />
                 </FormControl>
