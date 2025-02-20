@@ -27,6 +27,8 @@ const Projects: ProductCardProps[] = [
     description: "Invoice generating and tracking",
     img: "/projects/freelance.png",
     type: "personal",
+    techStack: ["NextJS"],
+    status: "ongoing",
   },
   {
     url: "https://cona.vercel.app/",
@@ -34,6 +36,7 @@ const Projects: ProductCardProps[] = [
     description: "Demo webiste for nft",
     img: "/projects/cona.png",
     type: "personal",
+    techStack: ["NextJS", "Chakra UI"],
   },
   {
     url: "https://www.npmjs.com/package/fintava",
@@ -46,9 +49,11 @@ const Projects: ProductCardProps[] = [
   {
     url: "https://20firstyling.vercel.app",
     title: "TwentyFirst Styling",
-    description: "Ecommerce Fashion Desgin store",
+    description: "E-commerce store for fashion Desgin",
     img: "/projects/twenty.png",
     type: "contract",
+    status: "maintenance",
+    techStack: ["NextJS", "PostgresDB", "Redis"],
   },
   {
     url: "https://bestrates-frontend.vercel.app",
@@ -56,6 +61,8 @@ const Projects: ProductCardProps[] = [
     description: "WebApp for giftcard and crypto trading",
     img: "/projects/best.png",
     type: "contract",
+    techStack: ["NextJS", "PostgresDB", "Redis", "NestJS", "Docker"],
+    status: "maintenance",
   },
 ];
 
@@ -118,6 +125,8 @@ export default function Home() {
                 url={project.url}
                 description={project.description}
                 type={project.type}
+                status={project.status}
+                techStack={project.techStack}
               />
             ))}
           </div>
@@ -224,7 +233,8 @@ export type ProductCardProps = {
   url: string;
   type: "contract" | "personal" | "opensource";
   description?: string;
-  techStack?: string | string[];
+  techStack?: string[];
+  status?: "completed" | "maintenance" | "ongoing";
 };
 
 const ProjectCard: React.FC<ProductCardProps> = ({
@@ -233,32 +243,76 @@ const ProjectCard: React.FC<ProductCardProps> = ({
   url,
   type,
   description,
+  techStack,
+  status,
 }) => {
   return (
-    <Card className={cn("bg-gray-800 text-white border-none shadow-sm")}>
-      <Image
-        src={img}
-        alt='cona'
-        width={300}
-        height={300}
-        className='object-center w-full'
-      />
+    <Card
+      className={cn(
+        "bg-gray-800 text-white border-none shadow-sm rounded-lg overflow-hidden"
+      )}
+    >
+      <Link
+        href={url}
+        aria-label={`View project ${title}`}
+        className='block'
+      >
+        <Image
+          src={img}
+          alt={`Preview of ${title}`}
+          width={400}
+          height={250}
+          className='w-full h-auto object-cover'
+          priority
+        />
+      </Link>
 
-      <div className='h-40 px-4 py-3 flex flex-col justify-between'>
-        <div className='space-y-2'>
-          <Link href={url}>
-            <h1 className='text-2xl font-marlish mb-1 font-normal md:text-3xl'>
-              {title}
-            </h1>
-          </Link>
-          <p className='font-sans text-xs font-medium text-gray-300'>
+      <div className='p-4 flex flex-col gap-3'>
+        <Link
+          href={url}
+          aria-label={`View project ${title}`}
+        >
+          <h2 className='text-lg md:text-xl font-medium font-marlish'>
+            {title}
+          </h2>
+        </Link>
+
+        {description && (
+          <p className='text-sm font-marlish md:text-base text-gray-300 leading-relaxed'>
             {description}
           </p>
+        )}
+
+        <div className='flex flex-wrap font-marlish gap-2 text-xs md:text-sm font-semibold'>
+          <span className='px-3 text-sm py-1 bg-gray-600 rounded-lg'>
+            {type}
+          </span>
+          {status && (
+            <span
+              className={cn(
+                "px-3 py-1 rounded-lg",
+                status === "completed" && "bg-green-500",
+                status === "maintenance" && "bg-yellow-500",
+                status === "ongoing" && "bg-blue-500"
+              )}
+            >
+              {status}
+            </span>
+          )}
         </div>
 
-        <div className='flex items-center font-semibold text-sm capitalize font-sans'>
-          <span className='bg-gray-400 p-2 rounded '>{type}</span>
-        </div>
+        {techStack && techStack.length > 0 && (
+          <div className='flex font-marlish flex-wrap gap-2 mt-2'>
+            {techStack.map((stack) => (
+              <span
+                key={stack}
+                className='px-3 py-1 bg-gray-700 text-xs text-gray-300 rounded-lg'
+              >
+                {stack}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
     </Card>
   );
