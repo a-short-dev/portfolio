@@ -63,12 +63,12 @@ export default function Home() {
   return (
     <div className='p-5  w-full max-w-6xl mx-auto'>
       <main>
-        <section className='w-full flex items-center min-h-[30svh] top-10 relative  lg:min-h-screen'>
+        <section className='w-full flex items-center min-h-[70svh] justify-center  top-20 relative'>
           <div>
             <h1 className='text-5xl text-white lg:text-7xl mb-2 font-marlish font-semibold'>
               Hi I&apos;m Oluwaleke!
             </h1>
-            <p className='text-base md:text-lg text-gray-200 font-sans font-medium'>
+            <p className='text-base text-balance w-4/5 md:text-lg text-gray-200 font-sans font-medium'>
               Full-stack developer passionate about building scalable and
               high-performance applications. Experienced in web, mobile, and
               backend development, with a strong focus on{" "}
@@ -105,7 +105,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className='space-y-10'>
+        <section className='space-y-10 mt-20 relative'>
           <h4 className='text-3xl font-sans font-semibold text-gray-500'>
             PROJECTS
           </h4>
@@ -203,8 +203,15 @@ export default function Home() {
           </div>
         </section>
 
-        <section className='space-y-10 py-20'>
+        <section className='space-y-10 '>
+          <h4 className='text-3xl font-sans font-semibold text-gray-500'>
+            Let&apos;s work together
+          </h4>
           <HireMeForm />
+        </section>
+
+        <section className='w-full flex items-center text-center py-10 text-base font-marlish text-slate-100 justify-center'>
+          <span>Built with ❤️ by Short Dev</span>
         </section>
       </main>
     </div>
@@ -217,6 +224,7 @@ export type ProductCardProps = {
   url: string;
   type: "contract" | "personal" | "opensource";
   description?: string;
+  techStack?: string | string[];
 };
 
 const ProjectCard: React.FC<ProductCardProps> = ({
