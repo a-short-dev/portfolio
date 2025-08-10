@@ -366,6 +366,19 @@
     inset 0 1px 0 hsl(var(--norse-gold) / 0.5);
 }
 
+/* Norse-themed cursor */
+body {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" fill="%23D4AF37" opacity="0.8"/><text x="12" y="16" text-anchor="middle" font-size="12" fill="%23B8860B">ᚦ</text></svg>'), auto;
+}
+
+a, button, [role="button"], .cursor-pointer {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="10" fill="%23FF6B35" opacity="0.9"/><circle cx="14" cy="14" r="6" fill="%23D4AF37" opacity="0.8"/><text x="14" y="18" text-anchor="middle" font-size="14" fill="%23B8860B">⚔</text></svg>'), pointer;
+}
+
+input, textarea, [contenteditable] {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="11" y="4" width="2" height="16" fill="%23D4AF37"/><text x="12" y="22" text-anchor="middle" font-size="8" fill="%23B8860B">ᚱ</text></svg>'), text;
+}
+
 /* Particle effects */
 .particle {
   position: absolute;

@@ -6,7 +6,7 @@ import AnimatedGridBackground from "@/components/animated-grid-background";
 import HeroSection from "@/components/hero-section";
 import ProjectsSection from "@/components/projects-section";
 import SkillsSection from "@/components/skills-section";
-import AIModelsSection from "@/components/ai-models-section";
+// import AIModelsSection from "@/components/ai-models-section"; // Replaced with floating chat
 import Footer from "@/components/footer";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -132,10 +132,7 @@ export default function Home() {
           {/* Skills Section */}
           <SkillsSection skillsRef={skillsRef} />
           
-          {/* AI Models Section */}
-          <section className='section-reveal py-32'>
-            <AIModelsSection />
-          </section>
+          {/* AI Models Section - Now available as floating chat button */}
           
           {/* Contact Form */}
           <section className='section-reveal py-32'>
