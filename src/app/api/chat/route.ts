@@ -254,15 +254,83 @@ export async function POST(request: NextRequest) {
       ],
       max_tokens: 500,
       temperature: 0.7,
+      stream: true,
     });
 
-    const aiResponse = completion.choices?.[0]?.message?.content || 'I apologize, but I\'m having trouble responding right now. Please try again later.';
-    
-    // Log successful interaction
-    const responseTime = Date.now() - startTime;
-    console.log(`✅ AI Chat - IP: ${clientIP}, Response Time: ${responseTime}ms, Message Length: ${message.length}`);
+    const encoder = new TextEncoder();
+    const stream = new ReadableStream({
+      async start(controller) {
+        let fullResponse = '';
+        let tokenCount = 0;
+        const requestStartTime = Date.now();
+        
+        // Send initial stats
+        const initialStats = {
+          type: 'stats',
+          data: {
+            model: 'openai/gpt-oss-20b:free',
+            inputTokens: Math.ceil(message.length / 4), // Rough estimate
+            temperature: 0.7,
+            maxTokens: 500,
+            requestTime: new Date().toISOString(),
+            clientIP: clientIP.substring(0, 8) + '...' // Partial IP for privacy
+          }
+        };
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify(initialStats)}\n\n`));
 
-    return NextResponse.json({ response: aiResponse });
+        try {
+          for await (const chunk of completion) {
+            const content = chunk.choices[0]?.delta?.content || '';
+            if (content) {
+              fullResponse += content;
+              tokenCount++;
+              
+              const streamData = {
+                type: 'content',
+                data: { content }
+              };
+              controller.enqueue(encoder.encode(`data: ${JSON.stringify(streamData)}\n\n`));
+            }
+          }
+          
+          // Send final stats
+          const responseTime = Date.now() - requestStartTime;
+          const finalStats = {
+            type: 'final_stats',
+            data: {
+              outputTokens: tokenCount,
+              totalTokens: Math.ceil(message.length / 4) + tokenCount,
+              responseTime: responseTime,
+              charactersGenerated: fullResponse.length,
+              wordsGenerated: fullResponse.split(' ').length,
+              completionTime: new Date().toISOString()
+            }
+          };
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify(finalStats)}\n\n`));
+          
+          // Log successful interaction
+          console.log(`✅ AI Chat Stream - IP: ${clientIP}, Response Time: ${responseTime}ms, Tokens: ${tokenCount}, Message Length: ${message.length}`);
+          
+        } catch (error) {
+          console.error('Streaming error:', error);
+          const errorData = {
+            type: 'error',
+            data: { message: 'Stream interrupted' }
+          };
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify(errorData)}\n\n`));
+        } finally {
+          controller.close();
+        }
+      },
+    });
+
+    return new Response(stream, {
+      headers: {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+      },
+    });
   } catch (error) {
     const responseTime = Date.now() - startTime;
     console.error(`❌ AI Chat Error - IP: ${clientIP}, Response Time: ${responseTime}ms, Error:`, error);
