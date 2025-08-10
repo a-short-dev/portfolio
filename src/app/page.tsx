@@ -1,319 +1,151 @@
+"use client";
+
+import React, { useEffect, useRef } from "react";
 import HireMeForm from "@/components/hire-me-form";
-import { Card } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
-import Image from "next/image";
-import Link from "next/link";
-import { BsUbuntu } from "react-icons/bs";
-import { DiReact } from "react-icons/di";
-import {
-  FaDocker,
-  FaGit,
-  FaHtml5,
-  FaJava,
-  FaLinkedinIn,
-  FaNodeJs,
-  FaPhp,
-  FaXTwitter,
-} from "react-icons/fa6";
-import { IoLogoJavascript } from "react-icons/io";
-import { RiTailwindCssLine } from "react-icons/ri";
-import { SiAndroidstudio, SiNestjs, SiNginx } from "react-icons/si";
-import { TbBrandReactNative } from "react-icons/tb";
+import AnimatedGridBackground from "@/components/animated-grid-background";
+import HeroSection from "@/components/hero-section";
+import ProjectsSection from "@/components/projects-section";
+import SkillsSection from "@/components/skills-section";
+import AIModelsSection from "@/components/ai-models-section";
+import Footer from "@/components/footer";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-const Projects: ProductCardProps[] = [
-  {
-    url: "https://freelance-pro-six.vercel.app",
-    title: "Freelance Pro",
-    description: "Invoice generating and tracking",
-    img: "/projects/freelance.png",
-    type: "personal",
-    techStack: ["NextJS"],
-    status: "ongoing",
-  },
-  {
-    url: "https://cona.vercel.app/",
-    title: "Cona",
-    description: "Demo webiste for nft",
-    img: "/projects/cona.png",
-    type: "personal",
-    techStack: ["NextJS", "Chakra UI"],
-  },
-  {
-    url: "https://www.npmjs.com/package/fintava",
-    title: "Fintava SDK Libray",
-    description: "Open source library for fintava payment gatewatey.",
-    img: "/projects/fintava.png",
-    type: "opensource",
-  },
-
-  {
-    url: "https://20firstyling.vercel.app",
-    title: "TwentyFirst Styling",
-    description: "E-commerce store for fashion Desgin",
-    img: "/projects/twenty.png",
-    type: "contract",
-    status: "maintenance",
-    techStack: ["NextJS", "PostgresDB", "Redis"],
-  },
-  {
-    url: "https://bestrates-frontend.vercel.app",
-    title: "BestRates Digitals",
-    description: "WebApp for giftcard and crypto trading",
-    img: "/projects/best.png",
-    type: "contract",
-    techStack: ["NextJS", "PostgresDB", "Redis", "NestJS", "Docker"],
-    status: "maintenance",
-  },
-];
+// Register GSAP plugins
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 export default function Home() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
+  const projectsRef = useRef<HTMLDivElement>(null);
+  const skillsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const ctx = gsap.context(() => {
+      // Hero section animations with improved performance
+      gsap.set([".hero-title", ".hero-subtitle", ".hero-description", ".hero-social"], {
+        opacity: 0,
+        willChange: "transform, opacity"
+      });
+      
+      const heroTl = gsap.timeline();
+      
+      heroTl.fromTo(".hero-title", 
+        { y: 100, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1.2, ease: "power3.out" }
+      )
+      .fromTo(".hero-subtitle", 
+        { y: 50, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1, ease: "power3.out" }, "-=0.9"
+      )
+      .fromTo(".hero-description", 
+        { y: 30, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" }, "-=0.6"
+      )
+      .fromTo(".hero-social", 
+        { scale: 0, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.6, ease: "back.out(1.7)" }, "-=0.3"
+      );
+
+      // Scroll-triggered animations for sections
+      gsap.utils.toArray(".section-reveal").forEach((section: any) => {
+        gsap.fromTo(section,
+          { y: 100, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 1,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: section,
+              start: "top 80%",
+              end: "bottom 20%",
+              toggleActions: "play none none reverse"
+            }
+          }
+        );
+      });
+
+      // Optimized card hover animations
+      gsap.utils.toArray(".card-hover").forEach((card: any) => {
+        const glow = card.querySelector(".card-glow");
+        
+        gsap.set(card, { willChange: "transform" });
+        gsap.set(glow, { willChange: "opacity" });
+        
+        const tl = gsap.timeline({ paused: true });
+        tl.to(card, { 
+          scale: 1.05, 
+          duration: 0.2, 
+          ease: "power2.out",
+          force3D: true
+        })
+        .to(glow, { 
+          opacity: 1, 
+          duration: 0.2 
+        }, 0);
+
+        card.addEventListener("mouseenter", () => {
+          tl.timeScale(1).play();
+        });
+        card.addEventListener("mouseleave", () => {
+          tl.timeScale(1.5).reverse();
+        });
+      });
+
+      // Parallax effect for background elements
+      gsap.to(".parallax-slow", {
+        yPercent: -50,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true
+        }
+      });
+
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <div className='p-5  w-full max-w-6xl mx-auto'>
-      <main>
-        <section className='w-full flex items-center min-h-[70svh] justify-center  top-20 relative'>
-          <div>
-            <h1 className='text-5xl text-white lg:text-7xl mb-2 font-marlish font-semibold'>
-              Hi I&apos;m Oluwaleke!
-            </h1>
-            <p className='text-base text-balance w-4/5 md:text-lg text-gray-200 font-sans font-medium'>
-              Full-stack developer passionate about building scalable and
-              high-performance applications. Experienced in web, mobile, and
-              backend development, with a strong focus on{" "}
-              <span className='text-gray-500'>
-                architecture, performance, and DevOps.
-              </span>
-            </p>
+    <div ref={containerRef} className='relative overflow-hidden'>
+      {/* Animated Grid Background */}
+      <AnimatedGridBackground />
+      
 
-            <p className='text-base font-marlish text-gray-200'>
-              Curious to how things work, user eccentric full-stack developer,
-              team leader, always ready learn and build amazing products.
-            </p>
-            <div className='flex items-center gap-2 mt-6'>
-              <Link
-                href='https://github.com/a-short-dev'
-                className='flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-xl font-semibold max-w-sm wpfull shadow-lg'
-              >
-                <FaGit />
-              </Link>
-              <Link
-                href='https://www.linkedin.com/in/ashortdev/'
-                className='flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-xl font-semibold max-w-sm wpfull shadow-lg'
-              >
-                <FaLinkedinIn />
-              </Link>
-
-              <Link
-                href='https://x.com/a_short_dev'
-                className='flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-xl font-semibold max-w-sm wpfull shadow-lg'
-              >
-                <FaXTwitter />
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        <section className='space-y-10 mt-20 relative'>
-          <h4 className='text-3xl font-sans font-semibold text-gray-500'>
-            PROJECTS
-          </h4>
-          <div className='grid grid-cols-1 gap-8 md:grid-cols-2  md:gap-3 lg:grid-cols-3 w-full'>
-            {Projects.map((project) => (
-              <ProjectCard
-                key={project.title}
-                title={project.title}
-                img={project.img}
-                url={project.url}
-                description={project.description}
-                type={project.type}
-                status={project.status}
-                techStack={project.techStack}
-              />
-            ))}
-          </div>
-        </section>
-
-        <section
-          className='space-y-10 py-20'
-          id='skills-and-tools'
-        >
-          <h4 className='text-3xl font-sans font-semibold text-gray-500'>
-            SKILLS &amp; TOOLS
-          </h4>
-          <div className='flex flex-wrap gap-4 items- justify-center md:gap-9 w-full'>
-            <div className='flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg'>
-              <FaHtml5 />
-            </div>
-            <div className='flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg'>
-              <IoLogoJavascript />
-            </div>
-            <div className='flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg'>
-              <FaJava />
-            </div>
-            <div className='flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg'>
-              <FaGit />
-            </div>
-            <div className='flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg'>
-              <DiReact />
-            </div>
-            <div className='flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg'>
-              <FaNodeJs />
-            </div>{" "}
-            <div className='flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg'>
-              <RiTailwindCssLine />
-            </div>
-            <div className='flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg'>
-              <FaPhp />
-            </div>
-            <div className='flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg'>
-              <TbBrandReactNative />
-            </div>
-            <div className='flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg'>
-              <SiNestjs />
-            </div>
-            <div className='flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg'>
-              <SiAndroidstudio />
-            </div>
-            <div className='flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg'>
-              <BsUbuntu />
-            </div>
-            <div className='flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg'>
-              <SiNginx />
-            </div>
-            <div className='flex items-center text-white bg-gray-800 w-min p-5 justify-center rounded-lg text-4xl font-semibold max-w-sm wpfull shadow-lg'>
-              <FaDocker />
-            </div>
-          </div>
-        </section>
-
-        <section className='space-y-10 py-20'>
-          <h4 className='text-3xl font-sans font-semibold text-gray-500'>
-            Abilities
-          </h4>
-          <div className='grid font-marlish grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6'>
-            {[
-              "Full-Stack Development – Building scalable web and mobile applications with modern frameworks.",
-              "Performance Optimization – Writing efficient, high-performance code for fast-loading applications.",
-              "API Development & Integration – Creating RESTful and GraphQL APIs, integrating third-party services.",
-              "DevOps & CI/CD – Automating deployments, managing Docker containers, and setting up scalable infrastructures.",
-              "Headless CMS & WordPress REST API – Developing dynamic frontend experiences using WordPress as a backend.",
-              "Cloud & Server Management – Deploying applications on AWS, Vercel, and DigitalOcean with Nginx configuration.",
-              "Mobile Development – Creating cross-platform mobile apps with React Native.",
-              "Security & Authentication – Implementing secure authentication with NextAuth, JWT, and OAuth.",
-              "Collaboration & Leadership – Leading development teams, mentoring junior developers, and managing agile projects.",
-              "Open Source Contributions – Actively contributing to open-source projects and maintaining personal projects.",
-            ].map((ability: string, index) => (
-              <div
-                key={index}
-                className='flex items-center text-white bg-gray-800 p-5 rounded-lg shadow-lg'
-              >
-                <span className='text-lg'>{ability}</span>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className='space-y-10 '>
-          <h4 className='text-3xl font-sans font-semibold text-gray-500'>
-            Let&apos;s work together
-          </h4>
-          <HireMeForm />
-        </section>
-
-        <section className='w-full flex items-center text-center py-10 text-base font-marlish text-slate-100 justify-center'>
-          <span>Built with ❤️ by Short Dev</span>
-        </section>
-      </main>
+      
+      <div className='relative z-10 p-5 w-full max-w-7xl mx-auto'>
+        <main>
+          {/* Hero Section */}
+          <HeroSection heroRef={heroRef} />
+          
+          {/* Projects Section */}
+          <ProjectsSection projectsRef={projectsRef} />
+          
+          {/* Skills Section */}
+          <SkillsSection skillsRef={skillsRef} />
+          
+          {/* AI Models Section */}
+          <section className='section-reveal py-32'>
+            <AIModelsSection />
+          </section>
+          
+          {/* Contact Form */}
+          <section className='section-reveal py-32'>
+            <HireMeForm />
+          </section>
+          
+          {/* Footer */}
+          <Footer />
+        </main>
+      </div>
     </div>
   );
 }
-
-export type ProductCardProps = {
-  title: string;
-  img: string;
-  url: string;
-  type: "contract" | "personal" | "opensource";
-  description?: string;
-  techStack?: string[];
-  status?: "completed" | "maintenance" | "ongoing";
-};
-
-const ProjectCard: React.FC<ProductCardProps> = ({
-  title,
-  img,
-  url,
-  type,
-  description,
-  techStack,
-  status,
-}) => {
-  return (
-    <Card
-      className={cn(
-        "bg-gray-800 text-white border-none shadow-sm rounded-lg overflow-hidden"
-      )}
-    >
-      <Link
-        href={url}
-        aria-label={`View project ${title}`}
-        className='block'
-      >
-        <Image
-          src={img}
-          alt={`Preview of ${title}`}
-          width={400}
-          height={250}
-          className='w-full h-auto object-cover'
-          priority
-        />
-      </Link>
-
-      <div className='p-4 flex flex-col gap-3'>
-        <Link
-          href={url}
-          aria-label={`View project ${title}`}
-        >
-          <h2 className='text-lg md:text-xl font-medium font-marlish'>
-            {title}
-          </h2>
-        </Link>
-
-        {description && (
-          <p className='text-sm font-marlish md:text-base text-gray-300 leading-relaxed'>
-            {description}
-          </p>
-        )}
-
-        <div className='flex flex-wrap font-marlish gap-2 text-xs md:text-sm font-semibold'>
-          <span className='px-3 text-sm py-1 bg-gray-600 rounded-lg'>
-            {type}
-          </span>
-          {status && (
-            <span
-              className={cn(
-                "px-3 py-1 rounded-lg",
-                status === "completed" && "bg-green-500",
-                status === "maintenance" && "bg-yellow-500",
-                status === "ongoing" && "bg-blue-500"
-              )}
-            >
-              {status}
-            </span>
-          )}
-        </div>
-
-        {techStack && techStack.length > 0 && (
-          <div className='flex font-marlish flex-wrap gap-2 mt-2'>
-            {techStack.map((stack) => (
-              <span
-                key={stack}
-                className='px-3 py-1 bg-gray-700 text-xs text-gray-300 rounded-lg'
-              >
-                {stack}
-              </span>
-            ))}
-          </div>
-        )}
-      </div>
-    </Card>
-  );
-};

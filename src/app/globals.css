@@ -1,53 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Uncial+Antiqua&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 224 71.4% 4.1%;
-    --card: 0 0% 100%;
-    --card-foreground: 224 71.4% 4.1%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 224 71.4% 4.1%;
-    --primary: 220.9 39.3% 11%;
-    --primary-foreground: 210 20% 98%;
-    --secondary: 220 14.3% 95.9%;
-    --secondary-foreground: 220.9 39.3% 11%;
-    --muted: 220 14.3% 95.9%;
-    --muted-foreground: 220 8.9% 46.1%;
-    --accent: 220 14.3% 95.9%;
-    --accent-foreground: 220.9 39.3% 11%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 20% 98%;
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 224 71.4% 4.1%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem
+    /* God of War Ragnarok Color Palette */
+    --background: 220 15% 8%; /* Deep Norse night */
+    --foreground: 45 100% 85%; /* Runic gold */
+    --card: 220 20% 12%; /* Dark stone */
+    --card-foreground: 45 90% 80%;
+    --popover: 220 25% 10%;
+    --popover-foreground: 45 100% 85%;
+    --primary: 15 100% 55%; /* Kratos red */
+    --primary-foreground: 45 100% 90%;
+    --secondary: 200 50% 25%; /* Atreus blue */
+    --secondary-foreground: 45 100% 85%;
+    --muted: 220 15% 15%;
+    --muted-foreground: 45 60% 60%;
+    --accent: 45 100% 60%; /* Norse gold */
+    --accent-foreground: 220 20% 10%;
+    --destructive: 0 100% 50%; /* Blood red */
+    --destructive-foreground: 45 100% 90%;
+    --border: 45 80% 30%;
+    --input: 220 20% 15%;
+    --ring: 45 100% 60%;
+    --chart-1: 15 100% 55%;
+    --chart-2: 200 50% 45%;
+    --chart-3: 45 100% 60%;
+    --chart-4: 280 40% 40%;
+    --chart-5: 120 30% 35%;
+    --radius: 0.75rem;
+    
+    /* Norse-themed custom colors */
+    --norse-ice: 200 80% 85%;
+    --norse-fire: 15 100% 55%;
+    --norse-gold: 45 100% 60%;
+    --norse-stone: 220 15% 20%;
+    --norse-shadow: 220 30% 5%;
+    --rune-glow: 45 100% 70%;
   }
   .dark {
-    --background: 224 71.4% 4.1%;
-    --foreground: 210 20% 98%;
-    --card: 224 71.4% 4.1%;
-    --card-foreground: 210 20% 98%;
-    --popover: 224 71.4% 4.1%;
-    --popover-foreground: 210 20% 98%;
-    --primary: 210 20% 98%;
-    --primary-foreground: 220.9 39.3% 11%;
-    --secondary: 215 27.9% 16.9%;
-    --secondary-foreground: 210 20% 98%;
-    --muted: 215 27.9% 16.9%;
-    --muted-foreground: 217.9 10.6% 64.9%;
-    --accent: 215 27.9% 16.9%;
-    --accent-foreground: 210 20% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 20% 98%;
-    --border: 215 27.9% 16.9%;
-    --input: 215 27.9% 16.9%;
+    --background: 220 15% 8%;
+    --foreground: 45 100% 85%;
+    --card: 220 20% 12%;
+    --card-foreground: 45 90% 80%;
+    --popover: 220 25% 10%;
+    --popover-foreground: 45 100% 85%;
+    --primary: 15 100% 55%;
+    --primary-foreground: 45 100% 90%;
+    --secondary: 200 50% 25%;
+    --secondary-foreground: 45 100% 85%;
+    --muted: 220 15% 15%;
+    --muted-foreground: 45 60% 60%;
+    --accent: 45 100% 60%;
+    --accent-foreground: 220 20% 10%;
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 45 100% 90%;
+    --border: 45 80% 30%;
+    --input: 220 20% 15%;
     --ring: 216 12.2% 83.9%;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
@@ -59,8 +71,314 @@
 @layer base {
   * {
     @apply border-border;
+    scroll-behavior: smooth;
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'Cinzel', serif;
+    background-image: 
+      radial-gradient(circle at 20% 80%, hsl(var(--norse-fire)) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, hsl(var(--secondary)) 0%, transparent 50%),
+      radial-gradient(circle at 40% 40%, hsl(var(--norse-shadow)) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Uncial Antiqua', serif;
+    text-shadow: 0 0 10px hsl(var(--rune-glow) / 0.5);
+  }
+  
+  /* Norse rune decorations */
+  .rune-border {
+    position: relative;
+  }
+  
+  .rune-border::before,
+  .rune-border::after {
+    content: '᚛';
+    position: absolute;
+    color: hsl(var(--norse-gold));
+    font-size: 1.5em;
+    text-shadow: 0 0 15px hsl(var(--rune-glow));
+    animation: runeGlow 3s ease-in-out infinite;
+  }
+  
+  .rune-border::before {
+    left: -30px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  
+  .rune-border::after {
+    content: '᚜';
+    right: -30px;
+    top: 50%;
+    transform: translateY(-50%);
   }
 }
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--accent-foreground));
+}
+
+/* Norse-themed utilities */
+@layer utilities {
+  .norse-glass {
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    background: linear-gradient(135deg, 
+      hsl(var(--norse-stone) / 0.3), 
+      hsl(var(--norse-shadow) / 0.6));
+    border: 2px solid hsl(var(--norse-gold) / 0.3);
+    box-shadow: 
+      0 0 30px hsl(var(--rune-glow) / 0.2),
+      inset 0 1px 0 hsl(var(--norse-gold) / 0.1);
+  }
+
+  .runic-text {
+    background: linear-gradient(135deg, 
+      hsl(var(--norse-gold)), 
+      hsl(var(--norse-fire)), 
+      hsl(var(--norse-gold)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-size: 200% 200%;
+    animation: runicShimmer 4s ease-in-out infinite;
+    /* Fallback for browsers that don't support background-clip: text */
+    color: hsl(var(--norse-gold));
+    /* Remove text-shadow as it conflicts with transparent text */
+  }
+
+  .kratos-gradient {
+    background: linear-gradient(-45deg, 
+      hsl(var(--norse-fire)), 
+      hsl(var(--norse-shadow)), 
+      hsl(var(--norse-gold)), 
+      hsl(var(--secondary)));
+    background-size: 400% 400%;
+    animation: kratosShift 8s ease infinite;
+  }
+
+  .asgard-border {
+    border: 3px solid transparent;
+    background: linear-gradient(hsl(var(--norse-stone)), hsl(var(--norse-stone))) padding-box,
+                linear-gradient(45deg, hsl(var(--norse-gold)), hsl(var(--norse-fire)), hsl(var(--secondary))) border-box;
+    box-shadow: 0 0 25px hsl(var(--rune-glow) / 0.4);
+  }
+
+  /* Performance optimizations */
+  .card-hover {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hero-title {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
+  .smooth-transition {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+/* Norse-themed keyframe animations */
+@keyframes kratosShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  25% {
+    background-position: 100% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  75% {
+    background-position: 0% 100%;
+  }
+}
+
+@keyframes runicShimmer {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes runeGlow {
+  0%, 100% {
+    text-shadow: 0 0 15px hsl(var(--rune-glow));
+    opacity: 0.8;
+  }
+  50% {
+    text-shadow: 0 0 30px hsl(var(--rune-glow)), 0 0 40px hsl(var(--norse-fire));
+    opacity: 1;
+  }
+}
+
+@keyframes vikingFloat {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) rotateZ(0deg);
+  }
+  33% {
+    transform: translate3d(-5px, -15px, 0) rotateZ(-1deg);
+  }
+  66% {
+    transform: translate3d(5px, -10px, 0) rotateZ(1deg);
+  }
+}
+
+@keyframes asgardGlow {
+  0%, 100% {
+    box-shadow: 
+      0 0 20px hsl(var(--norse-gold) / 0.3),
+      0 0 40px hsl(var(--rune-glow) / 0.2);
+  }
+  50% {
+    box-shadow: 
+      0 0 40px hsl(var(--norse-gold) / 0.6),
+      0 0 60px hsl(var(--rune-glow) / 0.4),
+      0 0 80px hsl(var(--norse-fire) / 0.3);
+  }
+}
+
+@keyframes mjolnirStrike {
+  0% {
+    transform: scale(1) rotate(0deg);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.1) rotate(5deg);
+    filter: brightness(1.3) drop-shadow(0 0 20px hsl(var(--norse-gold)));
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    filter: brightness(1);
+  }
+}
+
+@keyframes ragnarokPulse {
+  0%, 100% {
+    opacity: 0.7;
+    transform: scale(1);
+    filter: hue-rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+    filter: hue-rotate(15deg) brightness(1.2);
+  }
+}
+
+/* Norse-themed animation classes */
+.animate-viking-float {
+  animation: vikingFloat 4s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-asgard-glow {
+  animation: asgardGlow 3s ease-in-out infinite;
+  will-change: box-shadow;
+}
+
+.animate-runic-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    hsl(var(--norse-gold) / 0.3),
+    hsl(var(--rune-glow) / 0.2),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: runicShimmer 3s infinite;
+  will-change: background-position;
+}
+
+.animate-ragnarok-pulse {
+  animation: ragnarokPulse 2.5s ease-in-out infinite;
+  will-change: opacity, transform, filter;
+}
+
+.animate-mjolnir-strike {
+  animation: mjolnirStrike 0.6s ease-out;
+  will-change: transform, filter;
+}
+
+.animate-kratos-gradient {
+  animation: kratosShift 8s ease infinite;
+  will-change: background-position;
+}
+
+.animate-rune-glow {
+  animation: runeGlow 3s ease-in-out infinite;
+  will-change: text-shadow, opacity;
+}
+
+/* Norse-themed scrollbar */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--norse-shadow));
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, 
+    hsl(var(--norse-gold)), 
+    hsl(var(--norse-fire)), 
+    hsl(var(--norse-gold)));
+  border-radius: 6px;
+  border: 2px solid hsl(var(--norse-shadow));
+  box-shadow: 
+    0 0 15px hsl(var(--rune-glow) / 0.5),
+    inset 0 1px 0 hsl(var(--norse-gold) / 0.3);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(45deg, 
+    hsl(var(--rune-glow)), 
+    hsl(var(--norse-fire)), 
+    hsl(var(--rune-glow)));
+  box-shadow: 
+    0 0 25px hsl(var(--rune-glow) / 0.8),
+    0 0 35px hsl(var(--norse-fire) / 0.4),
+    inset 0 1px 0 hsl(var(--norse-gold) / 0.5);
+}
+
+/* Particle effects */
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: float 4s ease-in-out infinite;
+}
+
+.particle:nth-child(odd) {
+  animation-delay: -2s;
+}
+
+.particle:nth-child(even) {
+  animation-delay: -1s;
+}
+
