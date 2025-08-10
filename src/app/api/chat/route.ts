@@ -3,6 +3,93 @@ import OpenAI from 'openai';
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 
+// Rate limiting configuration
+const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
+const MAX_REQUESTS_PER_WINDOW = 10; // 10 requests per minute
+const MAX_MESSAGE_LENGTH = 500; // Maximum characters per message
+const MIN_MESSAGE_LENGTH = 3; // Minimum characters per message
+
+// In-memory store for rate limiting (use Redis in production)
+const requestCounts = new Map<string, { count: number; resetTime: number }>();
+
+// Blocked patterns and inappropriate content detection
+const BLOCKED_PATTERNS = [
+  /hack|exploit|vulnerability|attack|malicious/i,
+  /spam|advertisement|promotion|marketing/i,
+  /inappropriate|offensive|abusive|harassment/i,
+  /personal.*info|contact.*details|phone.*number|email.*address/i,
+  /password|login|credentials|authentication/i
+];
+
+// Helper function to get client IP
+function getClientIP(request: NextRequest): string {
+  const forwarded = request.headers.get('x-forwarded-for');
+  const realIP = request.headers.get('x-real-ip');
+  const remoteAddr = request.headers.get('remote-addr');
+  
+  if (forwarded) {
+    return forwarded.split(',')[0].trim();
+  }
+  if (realIP) {
+    return realIP;
+  }
+  if (remoteAddr) {
+    return remoteAddr;
+  }
+  return 'unknown';
+}
+
+// Rate limiting function
+function isRateLimited(clientIP: string): boolean {
+  const now = Date.now();
+  const clientData = requestCounts.get(clientIP);
+  
+  if (!clientData || now > clientData.resetTime) {
+    // Reset or initialize counter
+    requestCounts.set(clientIP, {
+      count: 1,
+      resetTime: now + RATE_LIMIT_WINDOW
+    });
+    return false;
+  }
+  
+  if (clientData.count >= MAX_REQUESTS_PER_WINDOW) {
+    return true; // Rate limited
+  }
+  
+  // Increment counter
+  clientData.count++;
+  return false;
+}
+
+// Content validation function
+function validateMessage(message: string): { isValid: boolean; reason?: string } {
+  // Check message length
+  if (message.length < MIN_MESSAGE_LENGTH) {
+    return { isValid: false, reason: 'Message too short' };
+  }
+  
+  if (message.length > MAX_MESSAGE_LENGTH) {
+    return { isValid: false, reason: 'Message too long' };
+  }
+  
+  // Check for blocked patterns
+  for (const pattern of BLOCKED_PATTERNS) {
+    if (pattern.test(message)) {
+      return { isValid: false, reason: 'Message contains inappropriate content' };
+    }
+  }
+  
+  // Check for excessive repetition
+  const words = message.toLowerCase().split(/\s+/);
+  const uniqueWords = new Set(words);
+  if (words.length > 10 && uniqueWords.size / words.length < 0.3) {
+    return { isValid: false, reason: 'Message contains excessive repetition' };
+  }
+  
+  return { isValid: true };
+}
+
 const openai = new OpenAI({
   baseURL: 'https://openrouter.ai/api/v1',
   apiKey: OPENROUTER_API_KEY,
@@ -107,12 +194,44 @@ DEFAULT INTRO LINES
 `;
 
 export async function POST(request: NextRequest) {
+  const startTime = Date.now();
+  const clientIP = getClientIP(request);
+  
   try {
+    // Rate limiting check
+    if (isRateLimited(clientIP)) {
+      console.warn(`Rate limit exceeded for IP: ${clientIP}`);
+      return NextResponse.json(
+        { 
+          error: 'Too many requests. Please wait a moment before trying again.',
+          retryAfter: Math.ceil(RATE_LIMIT_WINDOW / 1000)
+        },
+        { 
+          status: 429,
+          headers: {
+            'Retry-After': Math.ceil(RATE_LIMIT_WINDOW / 1000).toString(),
+            'X-RateLimit-Limit': MAX_REQUESTS_PER_WINDOW.toString(),
+            'X-RateLimit-Window': RATE_LIMIT_WINDOW.toString()
+          }
+        }
+      );
+    }
+
     const { message } = await request.json();
 
     if (!message) {
       return NextResponse.json(
         { error: 'Message is required' },
+        { status: 400 }
+      );
+    }
+
+    // Validate message content
+    const validation = validateMessage(message);
+    if (!validation.isValid) {
+      console.warn(`Invalid message from IP ${clientIP}: ${validation.reason}`);
+      return NextResponse.json(
+        { error: validation.reason || 'Invalid message content' },
         { status: 400 }
       );
     }
@@ -142,12 +261,18 @@ export async function POST(request: NextRequest) {
 
     const aiResponse = completion.choices?.[0]?.message?.content || 'I apologize, but I\'m having trouble responding right now. Please try again later.';
     
+    // Log successful interaction
+    const responseTime = Date.now() - startTime;
+    console.log(`✅ AI Chat - IP: ${clientIP}, Response Time: ${responseTime}ms, Message Length: ${message.length}`);
 
     return NextResponse.json({ response: aiResponse });
   } catch (error) {
-    console.error('API route error:', error);
+    const responseTime = Date.now() - startTime;
+    console.error(`❌ AI Chat Error - IP: ${clientIP}, Response Time: ${responseTime}ms, Error:`, error);
+    
+    // Don't expose internal error details to client
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'I\'m experiencing some technical difficulties. Please try again in a moment.' },
       { status: 500 }
     );
   }

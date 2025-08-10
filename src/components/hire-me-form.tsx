@@ -84,18 +84,23 @@ export default function HireMeForm() {
               control={form.control}
               render={({ field }) => (
                 <FormItem className='w-full'>
-                  <FormLabel className='text-sm font-medium text-gray-200 mb-2 block'>Name</FormLabel>
+                  <FormLabel className='text-sm font-medium text-amber-200 mb-2 block flex items-center gap-2'>
+                    <span className='text-yellow-400 animate-rune-glow'>ᚾ</span>
+                    Name
+                  </FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       type='text'
-                      className='w-full h-12 px-4 bg-slate-800/50 border border-gray-700 rounded-xl text-white placeholder:text-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300'
-                      placeholder='Enter your name'
+                      className='norse-glass w-full h-12 px-4 bg-slate-900/60 border border-amber-500/30 rounded-xl text-amber-100 placeholder:text-amber-400/60 focus:border-amber-400 focus:ring-2 focus:ring-amber-500/30 focus:shadow-lg focus:shadow-amber-500/20 transition-all duration-300 hover:border-amber-400/50'
+                      placeholder='Enter your name, warrior'
                       aria-invalid={!!form.formState.errors.name}
                       aria-describedby='name-error'
                     />
                   </FormControl>
-                  <FormMessage id='name-error' className='text-red-400 text-sm mt-1' />
+                  <FormMessage id='name-error' className='text-red-300 text-sm mt-1 flex items-center gap-1'>
+                    <span className='text-red-400'>⚠</span>
+                  </FormMessage>
                 </FormItem>
               )}
             />
@@ -111,18 +116,23 @@ export default function HireMeForm() {
               control={form.control}
               render={({ field }) => (
                 <FormItem className='w-full'>
-                  <FormLabel className='text-sm font-medium text-gray-200 mb-2 block'>Email</FormLabel>
+                  <FormLabel className='text-sm font-medium text-amber-200 mb-2 block flex items-center gap-2'>
+                    <span className='text-yellow-400 animate-rune-glow'>ᛖ</span>
+                    Email
+                  </FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       type='email'
-                      className='w-full h-12 px-4 bg-slate-800/50 border border-gray-700 rounded-xl text-white placeholder:text-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300'
-                      placeholder='Enter your email'
+                      className='norse-glass w-full h-12 px-4 bg-slate-900/60 border border-amber-500/30 rounded-xl text-amber-100 placeholder:text-amber-400/60 focus:border-amber-400 focus:ring-2 focus:ring-amber-500/30 focus:shadow-lg focus:shadow-amber-500/20 transition-all duration-300 hover:border-amber-400/50'
+                      placeholder='Your ravens will find you here'
                       aria-invalid={!!form.formState.errors.email}
                       aria-describedby='email-error'
                     />
                   </FormControl>
-                  <FormMessage id='email-error' className='text-red-400 text-sm mt-1' />
+                  <FormMessage id='email-error' className='text-red-300 text-sm mt-1 flex items-center gap-1'>
+                    <span className='text-red-400'>⚠</span>
+                  </FormMessage>
                 </FormItem>
               )}
             />
@@ -139,18 +149,23 @@ export default function HireMeForm() {
             control={form.control}
             render={({ field }) => (
               <FormItem className='w-full'>
-                <FormLabel className='text-sm font-medium text-gray-200 mb-2 block'>Message</FormLabel>
+                <FormLabel className='text-sm font-medium text-amber-200 mb-2 block flex items-center gap-2'>
+                  <span className='text-yellow-400 animate-rune-glow'>ᛗ</span>
+                  Message
+                </FormLabel>
                 <FormControl>
                   <Textarea
                     {...field}
-                    className='w-full min-h-[120px] px-4 py-3 bg-slate-800/50 border border-gray-700 rounded-xl text-white placeholder:text-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 resize-none'
-                    placeholder='Type your message here'
+                    className='norse-glass w-full min-h-[120px] px-4 py-3 bg-slate-900/60 border border-amber-500/30 rounded-xl text-amber-100 placeholder:text-amber-400/60 focus:border-amber-400 focus:ring-2 focus:ring-amber-500/30 focus:shadow-lg focus:shadow-amber-500/20 transition-all duration-300 resize-none hover:border-amber-400/50'
+                    placeholder='Share your quest, and let us forge something legendary together...'
                     aria-invalid={!!form.formState.errors.message}
                     aria-describedby='message-error'
                     rows={4}
                   />
                 </FormControl>
-                <FormMessage id='message-error' className='text-red-400 text-sm mt-1' />
+                <FormMessage id='message-error' className='text-red-300 text-sm mt-1 flex items-center gap-1'>
+                  <span className='text-red-400'>⚠</span>
+                </FormMessage>
               </FormItem>
             )}
           />
@@ -163,17 +178,31 @@ export default function HireMeForm() {
         >
           <Button
             type='submit'
-            className='w-full h-14 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white text-lg font-marlish font-semibold rounded-xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg hover:shadow-purple-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none'
+            className='asgard-border w-full h-14 bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 hover:from-amber-500 hover:via-orange-500 hover:to-red-500 text-white text-lg font-semibold rounded-xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-xl hover:shadow-amber-500/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none relative overflow-hidden group'
             disabled={isSubmitting}
           >
-            {isSubmitting ? (
-              <div className='flex items-center gap-2'>
-                <div className='w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin'></div>
-                Sending...
-              </div>
-            ) : (
-              "Send Message"
-            )}
+            {/* Norse rune decorations */}
+            <div className='absolute left-4 top-1/2 transform -translate-y-1/2 text-yellow-300 opacity-60 group-hover:opacity-100 transition-opacity duration-300 animate-rune-glow'>ᚠ</div>
+            <div className='absolute right-4 top-1/2 transform -translate-y-1/2 text-yellow-300 opacity-60 group-hover:opacity-100 transition-opacity duration-300 animate-rune-glow'>ᚱ</div>
+            
+            {/* Glowing background effect */}
+            <div className='absolute inset-0 bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-red-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-asgard-glow' />
+            
+            <span className='relative z-10'>
+              {isSubmitting ? (
+                <div className='flex items-center gap-3'>
+                  <div className='w-5 h-5 border-2 border-amber-200/30 border-t-amber-200 rounded-full animate-spin'></div>
+                  <span>Sending to Asgard...</span>
+                  <span className='text-yellow-300 animate-rune-glow'>ᛟ</span>
+                </div>
+              ) : (
+                <div className='flex items-center gap-3'>
+                  <span>⚔️</span>
+                  <span>Send Message</span>
+                  <span>🛡️</span>
+                </div>
+              )}
+            </span>
           </Button>
         </motion.div>
       </motion.form>
