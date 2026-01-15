@@ -138,7 +138,7 @@ export default function SkillsSection({ skillsRef }: SkillsSectionProps) {
 									{category.title}
 								</h3>
 								<span className="text-[10px] text-foreground/40 font-mono mb-1.5 uppercase tracking-wide">
-									// {category.description}
+									{"//"} {category.description}
 								</span>
 							</div>
 
