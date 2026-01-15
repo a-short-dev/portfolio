@@ -2,119 +2,150 @@
 
 import React, { useEffect, useRef } from "react";
 import Link from "next/link";
-import { FaGit, FaLinkedinIn, FaXTwitter } from "react-icons/fa6";
+import { FaGithub, FaLinkedinIn, FaXTwitter } from "react-icons/fa6";
 import { gsap } from "gsap";
 
-
 interface HeroSectionProps {
-  heroRef: React.RefObject<HTMLDivElement>;
+	heroRef: React.RefObject<HTMLDivElement | null>;
 }
 
 export default function HeroSection({ heroRef }: HeroSectionProps) {
-  const titleRef = useRef<HTMLHeadingElement>(null);
+	const titleRef = useRef<HTMLHeadingElement>(null);
+	const contentRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    // Entrance animation
-    if (titleRef.current) {
-      gsap.fromTo(titleRef.current, 
-        { 
-          opacity: 0, 
-          y: 50
-        },
-        { 
-          opacity: 1, 
-          y: 0, 
-          duration: 1.5, 
-          ease: "power3.out",
-          delay: 0.3
-        }
-      );
-    }
-  }, []);
+	useEffect(() => {
+		if (typeof window === "undefined") return;
 
-  return (
-    <section ref={heroRef} className='w-full flex items-center min-h-screen justify-center relative overflow-hidden pt-32 pb-16'>
-      {/* Norse floating runes and embers */}
-      <div className="absolute top-32 left-10 w-3 h-3 bg-gradient-to-r from-orange-500 to-red-500 rounded-full animate-viking-float opacity-70" />
-      <div className="absolute top-48 right-20 w-2 h-2 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full animate-ragnarok-pulse opacity-60" />
-      <div className="absolute bottom-40 left-20 w-2.5 h-2.5 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full animate-asgard-glow opacity-80" />
-      <div className="absolute top-72 left-1/3 text-2xl text-yellow-400/30 animate-rune-glow">ᚱ</div>
-      <div className="absolute bottom-60 right-1/4 text-xl text-orange-400/25 animate-rune-glow">ᚦ</div>
-      <div className="absolute top-1/3 right-10 text-lg text-red-400/20 animate-rune-glow">ᚢ</div>
-      
+		const ctx = gsap.context(() => {
+			gsap.fromTo(
+				titleRef.current,
+				{ opacity: 0, y: 30, letterSpacing: "0.1em" },
+				{
+					opacity: 1,
+					y: 0,
+					letterSpacing: "-0.04em",
+					duration: 1.5,
+					ease: "power3.out",
+					delay: 0.1,
+				},
+			);
 
-      
-      <div className='text-center max-w-6xl mx-auto relative z-10 px-4 sm:px-6 lg:px-8'>
-        <div className='mb-16 relative'>
-          {/* Norse title with runic styling */}
-          <h1 ref={titleRef} className='rune-border hero-title text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl mb-10 font-bold leading-tight relative'>
-            <span className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-300 bg-clip-text text-transparent font-bold" style={{WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', color: '#fbbf24'}}>Greetings, I am Oluwaleke!</span>
-            <div className="absolute inset-0 bg-gradient-to-r from-red-500/20 via-orange-500/20 to-yellow-500/20 blur-3xl -z-10 animate-asgard-glow" />
-            {/* Epic glow effect */}
-            <div className="absolute -inset-4 bg-gradient-to-r from-amber-500/10 to-red-500/10 blur-2xl rounded-full animate-ragnarok-pulse" />
-          </h1>
-          {/* Norse divider */}
-          <div className='flex items-center justify-center gap-4 mb-12'>
-            <div className='text-yellow-400 text-2xl animate-rune-glow'>᚛</div>
-            <div className='w-32 h-1 bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 rounded-full animate-asgard-glow' />
-            <div className='text-yellow-400 text-2xl animate-rune-glow'>᚜</div>
-          </div>
-        </div>
-        
-        <div className='space-y-10 mb-20'>
-          <p className='hero-subtitle text-lg sm:text-xl md:text-2xl lg:text-3xl font-light max-w-4xl mx-auto leading-relaxed'>
-            <span className='text-amber-200'>Warrior of Code</span>, forging{" "}
-            <span className='runic-text font-medium text-2xl'>
-              legendary digital realms
-            </span>
-            {" "}with the power of full-stack mastery.
-          </p>
-          
-          <p className='hero-description text-base sm:text-lg md:text-xl max-w-4xl mx-auto text-amber-300/80 leading-relaxed'>
-            ⚔️ Battle-tested in web & mobile development • 🛡️ Guardian of scalable architectures • 🔥 Forged by curiosity and tempered by experience
-          </p>
-          
+			gsap.fromTo(
+				".hero-animate",
+				{ opacity: 0, y: 10 },
+				{
+					opacity: 1,
+					y: 0,
+					duration: 1,
+					stagger: 0.1,
+					ease: "power2.out",
+					delay: 0.6,
+				},
+			);
+		}, contentRef);
 
-        </div>
+		return () => ctx.revert();
+	}, []);
 
-        {/* Norse-themed social links */}
-        <div className='hero-social flex items-center justify-center gap-6 sm:gap-8 flex-wrap'>
-          <div className="group relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-red-500/20 to-orange-500/20 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500 animate-asgard-glow" />
-            <Link
-              href='https://github.com/a-short-dev'
-              className='norse-glass asgard-border relative flex items-center justify-center p-5 rounded-xl text-2xl font-bold shadow-2xl transition-all duration-300 hover:scale-110 animate-mjolnir-strike group-hover:animate-mjolnir-strike'
-            >
-              <FaGit className='text-amber-300 group-hover:text-yellow-400 transition-colors duration-300' />
-              <div className='absolute -top-1 -right-1 text-xs text-yellow-400/60 animate-rune-glow'>ᚷ</div>
-            </Link>
-          </div>
-          
-          <div className="group relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500 animate-asgard-glow" />
-            <Link
-              href='https://www.linkedin.com/in/ashortdev/'
-              className='norse-glass asgard-border relative flex items-center justify-center p-5 rounded-xl text-2xl font-bold shadow-2xl transition-all duration-300 hover:scale-110 animate-mjolnir-strike group-hover:animate-mjolnir-strike'
-             >
-               <FaLinkedinIn className='text-blue-300 group-hover:text-cyan-400 transition-colors duration-300' />
-               <div className='absolute -top-1 -right-1 text-xs text-cyan-400/60 animate-rune-glow'>ᛚ</div>
-             </Link>
-           </div>
+	return (
+		<section
+			ref={heroRef}
+			className="w-full flex items-center min-h-screen justify-center relative overflow-hidden pt-52 pb-24 bg-background"
+		>
+			{/* Minimalist Grid Overlay - Gold Accent */}
+			<div
+				className="absolute inset-0 opacity-[0.03]"
+				style={{
+					backgroundImage:
+						"linear-gradient(hsl(var(--accent)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--accent)) 1px, transparent 1px)",
+					backgroundSize: "80px 80px",
+				}}
+			/>
 
-           <div className="group relative">
-             <div className="absolute inset-0 bg-gradient-to-r from-gray-600/20 to-slate-500/20 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500 animate-asgard-glow" />
-             <Link
-               href='https://x.com/a_short_dev'
-               className='norse-glass asgard-border relative flex items-center justify-center p-5 rounded-xl text-2xl font-bold shadow-2xl transition-all duration-300 hover:scale-110 animate-mjolnir-strike group-hover:animate-mjolnir-strike'
-             >
-               <FaXTwitter className='text-slate-300 group-hover:text-gray-200 transition-colors duration-300' />
-               <div className='absolute -top-1 -right-1 text-xs text-gray-400/60 animate-rune-glow'>ᛪ</div>
-             </Link>
-           </div>
-         </div>
-         
+			<div
+				ref={contentRef}
+				className="text-center max-w-6xl mx-auto relative z-10 px-4 sm:px-6 lg:px-8"
+			>
+				<div className="mb-12 hero-animate">
+					<span className="inline-block py-2 px-4 mb-8 bg-accent/5 text-accent text-[11px] uppercase tracking-[0.3em] font-black border border-accent/20 animate-pulse-slow">
+						System_Active
+					</span>
 
-       </div>
-     </section>
-  );
+					<h1
+						ref={titleRef}
+						className="text-6xl sm:text-8xl md:text-9xl font-black leading-[0.85] tracking-tighter mb-4 text-gold-gradient drop-shadow-2xl"
+					>
+						a_short_dev
+					</h1>
+
+					<h2 className="text-xl sm:text-3xl font-bold tracking-[0.2em] text-white/80 uppercase mb-8">
+						<span className="text-accent">POLYGLOT</span> ENGINEER
+					</h2>
+
+					<div className="hero-animate space-y-2">
+						<p className="text-sm sm:text-base font-mono tracking-[0.2em] uppercase text-foreground/60 w-full max-w-lg mx-auto border-t border-b border-white/5 py-4">
+							Performance • Low Memory • Security
+						</p>
+					</div>
+				</div>
+
+				<div className="hero-animate max-w-2xl mx-auto space-y-12 mb-20 animate-fade-in">
+					<p className="text-xl sm:text-2xl font-light leading-relaxed text-foreground/80">
+						Designing high-performance native and web ecosystems. Focusing on
+						memory efficiency and secure architecture for
+						<span className="text-accent font-medium ml-2 border-b border-accent/20 pb-0.5">
+							scalable startups
+						</span>
+						.
+					</p>
+
+					<div className="flex items-center justify-center gap-6 text-[10px] font-bold tracking-widest text-foreground/40">
+						<span className="hover:text-accent transition-colors cursor-default">
+							KOTLIN
+						</span>
+						<span className="w-1 h-1 bg-accent/40 rounded-full" />
+						<span className="hover:text-accent transition-colors cursor-default">
+							SWIFT
+						</span>
+						<span className="w-1 h-1 bg-accent/40 rounded-full" />
+						<span className="hover:text-accent transition-colors cursor-default">
+							RUST
+						</span>
+						<span className="w-1 h-1 bg-accent/40 rounded-full" />
+						<span className="hover:text-accent transition-colors cursor-default">
+							TYPESCRIPT
+						</span>
+					</div>
+				</div>
+
+				<div className="hero-animate flex items-center justify-center gap-8">
+					<Link
+						href="https://github.com/a-short-dev"
+						target="_blank"
+						className="group relative inline-flex items-center gap-3 px-8 py-4 bg-white text-black font-bold tracking-wider text-xs uppercase hover:bg-accent hover:text-white transition-all duration-300 font-mono"
+					>
+						<FaGithub size={18} />
+						<span>GitHub Access</span>
+					</Link>
+
+					<div className="flex items-center gap-6">
+						<Link
+							href="https://www.linkedin.com/in/ashortdev/"
+							target="_blank"
+							className="text-foreground/40 hover:text-accent transition-colors duration-300"
+						>
+							<FaLinkedinIn size={24} />
+						</Link>
+						<Link
+							href="https://x.com/a_short_dev"
+							target="_blank"
+							className="text-foreground/40 hover:text-accent transition-colors duration-300"
+						>
+							<FaXTwitter size={24} />
+						</Link>
+					</div>
+				</div>
+			</div>
+		</section>
+	);
 }

@@ -1,154 +1,125 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from 'react';
-import { gsap } from 'gsap';
+import type React from "react";
+import { useEffect, useRef } from "react";
 
 interface AnimatedGridBackgroundProps {
-  className?: string;
+	className?: string;
 }
 
-// Seeded random function for consistent results
-const seededRandom = (seed: number) => {
-  const x = Math.sin(seed) * 10000;
-  return x - Math.floor(x);
-};
+const AnimatedGridBackground: React.FC<AnimatedGridBackgroundProps> = ({
+	className = "",
+}) => {
+	const canvasRef = useRef<HTMLCanvasElement>(null);
 
-const AnimatedGridBackground: React.FC<AnimatedGridBackgroundProps> = ({ className = '' }) => {
-  const gridRef = useRef<HTMLDivElement>(null);
-  const dotsRef = useRef<HTMLDivElement[]>([]);
-  const [isClient, setIsClient] = useState(false);
-  const [dotData, setDotData] = useState<Array<{isHighlight: boolean, animationDelay: number, scale: number, opacity: number}>>([]);
+	useEffect(() => {
+		const canvas = canvasRef.current;
+		if (!canvas) return;
 
-  useEffect(() => {
-    setIsClient(true);
-    
-    // Generate dot data on client side only
-    const rows = 20;
-    const cols = 30;
-    const newDotData = [];
-    
-    for (let i = 0; i < rows * cols; i++) {
-      const seed = i * 123.456; // Use index as seed for consistency
-      newDotData.push({
-        isHighlight: seededRandom(seed) > 0.85,
-        animationDelay: seededRandom(seed + 1) * 2,
-        scale: seededRandom(seed + 2) * 0.8 + 0.2,
-        opacity: seededRandom(seed + 3) * 0.7 + 0.3
-      });
-    }
-    
-    setDotData(newDotData);
-  }, []);
+		const ctx = canvas.getContext("2d");
+		if (!ctx) return;
 
-  useEffect(() => {
-    if (!gridRef.current || !isClient || dotData.length === 0) return;
+		let animationFrameId: number;
+		let width = 0;
+		let height = 0;
 
-    const dots = dotsRef.current;
-    
-    // Animate dots with staggered timing
-    dots.forEach((dot, index) => {
-      if (dot && dotData[index]) {
-        const data = dotData[index];
-        
-        gsap.set(dot, {
-          scale: 0.1,
-          opacity: 0.3,
-        });
-        
-        // Pulsing animation
-        gsap.to(dot, {
-          scale: data.scale,
-          opacity: data.opacity,
-          duration: 2 + seededRandom(index * 456.789) * 3,
-          delay: data.animationDelay,
-          repeat: -1,
-          yoyo: true,
-          ease: "power2.inOut",
-        });
-        
-        // Floating animation
-        gsap.to(dot, {
-          y: (seededRandom(index * 789.123) - 0.5) * 20,
-          x: (seededRandom(index * 321.654) - 0.5) * 20,
-          duration: 4 + seededRandom(index * 987.321) * 4,
-          delay: data.animationDelay * 0.5,
-          repeat: -1,
-          yoyo: true,
-          ease: "sine.inOut",
-        });
-      }
-    });
+		const dots: Array<{
+			x: number;
+			y: number;
+			baseX: number;
+			baseY: number;
+			size: number;
+			opacity: number;
+			isHighlight: boolean;
+			angle: number;
+			speed: number;
+		}> = [];
 
-    // Cleanup function
-    return () => {
-      gsap.killTweensOf(dots);
-    };
-  }, [isClient, dotData]);
+		const rows = 25;
+		const cols = 40;
 
-  // Generate grid dots
-  const generateDots = () => {
-    if (!isClient || dotData.length === 0) {
-      return null; // Don't render anything on server side
-    }
-    
-    const dots = [];
-    const rows = 20;
-    const cols = 30;
-    
-    for (let i = 0; i < rows; i++) {
-      for (let j = 0; j < cols; j++) {
-        const key = `${i}-${j}`;
-        const index = i * cols + j;
-        const data = dotData[index];
-        
-        if (data) {
-          dots.push(
-            <div
-              key={key}
-              ref={(el) => {
-                if (el) dotsRef.current[index] = el;
-              }}
-              className={`absolute w-1 h-1 rounded-full transition-all duration-300 ${
-                data.isHighlight 
-                  ? 'bg-gradient-to-r from-blue-400 to-purple-500 shadow-lg shadow-blue-500/20' 
-                  : 'bg-slate-600/40'
-              }`}
-              style={{
-                left: `${(j / (cols - 1)) * 100}%`,
-                top: `${(i / (rows - 1)) * 100}%`,
-                transform: 'translate(-50%, -50%)',
-              }}
-            />
-          );
-        }
-      }
-    }
-    return dots;
-  };
+		const handleResize = () => {
+			width = window.innerWidth;
+			height = window.innerHeight;
+			canvas.width = width * window.devicePixelRatio;
+			canvas.height = height * window.devicePixelRatio;
+			ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+			initDots();
+		};
 
-  return (
-    <div 
-      ref={gridRef}
-      className={`fixed inset-0 pointer-events-none overflow-hidden ${className}`}
-      style={{ zIndex: 1 }}
-    >
-      {/* Animated grid dots */}
-      <div className="relative w-full h-full">
-        {isClient && generateDots()}
-      </div>
-      
-      {/* Gradient overlays for depth */}
-      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-slate-900/10 to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-tr from-blue-900/5 via-transparent to-purple-900/5" />
-      
-      {/* Moving light rays */}
-      <div className="absolute inset-0">
-        <div className="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-transparent via-blue-500/20 to-transparent animate-pulse" />
-        <div className="absolute top-0 right-1/3 w-px h-full bg-gradient-to-b from-transparent via-purple-500/20 to-transparent animate-pulse" style={{ animationDelay: '1s' }} />
-        <div className="absolute left-0 top-1/4 w-full h-px bg-gradient-to-r from-transparent via-blue-500/10 to-transparent animate-pulse" style={{ animationDelay: '2s' }} />
-      </div>
-    </div>
-  );
+		const initDots = () => {
+			dots.length = 0;
+			for (let i = 0; i < rows; i++) {
+				for (let j = 0; j < cols; j++) {
+					const baseX = (j / (cols - 1)) * width;
+					const baseY = (i / (rows - 1)) * height;
+					dots.push({
+						x: baseX,
+						y: baseY,
+						baseX,
+						baseY,
+						size: Math.random() * 1.5 + 0.5,
+						opacity: Math.random() * 0.4 + 0.1,
+						isHighlight: Math.random() > 0.95,
+						angle: Math.random() * Math.PI * 2,
+						speed: 0.02 + Math.random() * 0.03,
+					});
+				}
+			}
+		};
+
+		const render = () => {
+			ctx.clearRect(0, 0, width, height);
+
+			dots.forEach((dot) => {
+				dot.angle += dot.speed;
+				dot.x = dot.baseX + Math.cos(dot.angle) * 10;
+				dot.y = dot.baseY + Math.sin(dot.angle) * 8;
+
+				ctx.beginPath();
+				ctx.arc(dot.x, dot.y, dot.size, 0, Math.PI * 2);
+
+				if (dot.isHighlight) {
+					// GoT Gold Highlight
+					ctx.fillStyle = `rgba(184, 134, 11, ${dot.opacity + 0.3})`;
+					ctx.shadowBlur = 10;
+					ctx.shadowColor = "rgba(184, 134, 11, 0.4)";
+				} else {
+					// Steel/Slate base
+					ctx.fillStyle = `rgba(100, 116, 139, ${dot.opacity})`;
+					ctx.shadowBlur = 0;
+				}
+
+				ctx.fill();
+			});
+
+			animationFrameId = requestAnimationFrame(render);
+		};
+
+		window.addEventListener("resize", handleResize);
+		handleResize();
+		render();
+
+		return () => {
+			window.removeEventListener("resize", handleResize);
+			cancelAnimationFrame(animationFrameId);
+		};
+	}, []);
+
+	return (
+		<div
+			className={`fixed inset-0 pointer-events-none overflow-hidden -z-10 ${className}`}
+		>
+			<canvas
+				ref={canvasRef}
+				className="w-full h-full"
+				style={{ filter: "blur(0.5px)" }}
+			/>
+			{/* Subtle overlays for professional GoT depth */}
+			<div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,transparent_0%,rgba(15,15,16,0.4)_100%)]" />
+			<div className="absolute inset-0 bg-gradient-to-b from-slate-950/20 via-transparent to-slate-950/40" />
+		</div>
+	);
 };
 
 export default AnimatedGridBackground;

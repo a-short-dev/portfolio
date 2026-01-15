@@ -7,106 +7,97 @@ import FloatingChatButton from "@/components/floating-chat-button";
 import SpotifyWidget from "@/components/spotify-widget";
 
 const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
+	src: "./fonts/GeistVF.woff",
+	variable: "--font-geist-sans",
+	weight: "100 900",
 });
 const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
+	src: "./fonts/GeistMonoVF.woff",
+	variable: "--font-geist-mono",
+	weight: "100 900",
 });
 
 const marlish = localFont({
-  src: "./fonts/Mulish/Mulish-VariableFont_wght.ttf",
-  variable: "--font-marlish",
-  weight: "100 900",
+	src: "./fonts/Mulish/Mulish-VariableFont_wght.ttf",
+	variable: "--font-marlish",
+	weight: "100 900",
 });
 
 const open_sans = localFont({
-  src: "./fonts/Open_Sans/OpenSans-VariableFont_wdth,wght.ttf",
-  variable: "--font-open-sans",
-  weight: "100 900",
+	src: "./fonts/Open_Sans/OpenSans-VariableFont_wdth,wght.ttf",
+	variable: "--font-open-sans",
+	weight: "100 900",
 });
 
 export const metadata: Metadata = {
-  title: "Oluwaleke Abiodun",
-  description: "Full-stack developer web and mobile developer",
-  keywords: [
-    "javascript developer, experienced developer, nodejs developer, frontend developer, java developer",
-  ],
+	title: "Oluwaleke Abiodun",
+	description: "Full-stack developer web and mobile developer",
+	keywords: [
+		"javascript developer, experienced developer, nodejs developer, frontend developer, java developer",
+	],
 };
 
 export default function RootLayout({
-  children,
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-  return (
-    <html lang='en'>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} ${marlish.variable} ${open_sans.variable} w-full dark:bg-slate-950 scroll-smooth bg-slate-900 antialiased min-h-screen`}
-      >
-        <header className='norse-glass fixed top-0 left-0 right-0 z-50 h-20 backdrop-blur-md bg-slate-900/90 border-b border-amber-500/30 transition-all duration-300 relative overflow-hidden'>
-          {/* Norse header decorations */}
-          <div className='absolute top-2 left-10 text-yellow-400/20 text-sm animate-rune-glow'>ᚺ</div>
-          <div className='absolute top-2 right-10 text-yellow-400/20 text-sm animate-rune-glow'>ᚱ</div>
-          <div className='absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-red-500/5 animate-asgard-glow' />
-          
-          <div className='w-full mx-auto max-w-7xl px-5 h-full flex items-center justify-between relative z-10'>
-            <Link href='/' className='group relative'>
-              <div className='absolute -inset-2 bg-gradient-to-r from-amber-500/20 to-red-500/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-asgard-glow' />
-              <h1 className='font-marlish font-bold text-2xl bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-300 bg-clip-text text-transparent group-hover:from-yellow-300 group-hover:via-amber-400 group-hover:to-yellow-300 transition-all duration-300 relative flex items-center gap-2'>
-                <span className='text-yellow-400/60 text-lg animate-rune-glow'>ᚦ</span>
-                a_short_dev
-                <span className='text-yellow-400/60 text-lg animate-rune-glow'>ᚦ</span>
-              </h1>
-            </Link>
+	return (
+		<html lang="en" className="scroll-smooth">
+			<body
+				className={`${geistSans.variable} ${geistMono.variable} ${marlish.variable} ${open_sans.variable} w-full dark:bg-slate-950 bg-background text-foreground antialiased min-h-screen font-sans`}
+			>
+				<header className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-auto max-w-[90vw]">
+					<div className="frosted-glass rounded-full px-6 py-3 flex items-center justify-between gap-6 md:gap-8 border border-white/10 shadow-2xl bg-black/50 backdrop-blur-xl">
+						<Link href="/" className="group relative flex items-center gap-2">
+							<div className="w-2 h-2 bg-accent rounded-full animate-pulse-slow" />
+							<span className="font-mono text-xs font-bold tracking-widest text-gold-gradient uppercase group-hover:brightness-110 transition-all duration-300">
+								AS_DEV
+							</span>
+						</Link>
 
-            <nav className='hidden md:flex items-center gap-8'>
-              <Link 
-                href='#projects' 
-                className='text-amber-200 hover:text-amber-100 font-marlish font-medium transition-colors duration-300 relative group flex items-center gap-1'
-              >
-                <span className='text-yellow-400/60 text-sm animate-rune-glow'>ᛈ</span>
-                Projects
-                <span className='absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-amber-500 to-red-500 group-hover:w-full transition-all duration-300 animate-asgard-glow'></span>
-              </Link>
-              <Link 
-                href='#skills-and-tools' 
-                className='text-amber-200 hover:text-amber-100 font-marlish font-medium transition-colors duration-300 relative group flex items-center gap-1'
-              >
-                <span className='text-yellow-400/60 text-sm animate-rune-glow'>ᛋ</span>
-                Skills
-                <span className='absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-amber-500 to-red-500 group-hover:w-full transition-all duration-300 animate-asgard-glow'></span>
-              </Link>
-              <Link 
-                href='#abilities' 
-                className='text-amber-200 hover:text-amber-100 font-marlish font-medium transition-colors duration-300 relative group flex items-center gap-1'
-              >
-                <span className='text-yellow-400/60 text-sm animate-rune-glow'>ᚨ</span>
-                Abilities
-                <span className='absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-amber-500 to-red-500 group-hover:w-full transition-all duration-300 animate-asgard-glow'></span>
-              </Link>
-              <Link 
-                href='#contact' 
-                className='asgard-border px-6 py-2 bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 hover:from-amber-500 hover:via-orange-500 hover:to-red-500 text-white font-marlish font-medium rounded-full transition-all duration-300 transform hover:scale-105 relative overflow-hidden group'
-              >
-                <div className='absolute inset-0 bg-gradient-to-r from-amber-500/20 to-red-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-asgard-glow' />
-                <span className='relative z-10 flex items-center gap-2'>
-                  <span className='text-yellow-300/80 animate-rune-glow'>ᚲ</span>
-                  Contact
-                  <span className='text-yellow-300/80 animate-rune-glow'>ᚲ</span>
-                </span>
-              </Link>
-            </nav>
-          </div>
-        </header>
-        {children}
-        <FloatingChatButton />
-        <SpotifyWidget />
-        <Toaster />
-      </body>
-    </html>
-  );
+						<div className="w-[1px] h-4 bg-white/10 hidden md:block" />
+
+						<nav className="flex items-center gap-6 md:gap-8">
+							<Link
+								href="#projects"
+								className="text-[10px] uppercase tracking-widest text-white/60 hover:text-accent font-bold transition-colors duration-300"
+							>
+								Projects
+							</Link>
+							<Link
+								href="#skills-and-tools"
+								className="text-[10px] uppercase tracking-widest text-white/60 hover:text-accent font-bold transition-colors duration-300"
+							>
+								Skills
+							</Link>
+							<Link
+								href="https://devweaver.substack.com"
+								target="_blank"
+								className="text-[10px] uppercase tracking-widest text-white/60 hover:text-accent font-bold transition-colors duration-300"
+							>
+								Poems
+							</Link>
+							<Link
+								href="#about"
+								className="text-[10px] uppercase tracking-widest text-white/60 hover:text-accent font-bold transition-colors duration-300"
+							>
+								Cooking
+							</Link>
+							<Link
+								href="#contact"
+								className="text-[10px] uppercase tracking-widest text-black bg-accent px-3 py-1.5 rounded-sm font-black hover:bg-white transition-all duration-300"
+							>
+								Contact
+							</Link>
+						</nav>
+					</div>
+				</header>
+				{children}
+				<FloatingChatButton />
+				<SpotifyWidget />
+				<Toaster />
+			</body>
+		</html>
+	);
 }
