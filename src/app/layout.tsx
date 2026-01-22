@@ -30,12 +30,77 @@ const open_sans = localFont({
 });
 
 export const metadata: Metadata = {
-	title: "Oluwaleke Abiodun",
-	description: "Full-stack developer web and mobile developer",
+	metadataBase: new URL("https://oluwaleke.dev"),
+	title: {
+		default: "Oluwaleke Abiodun | Full Stack Software Engineer",
+		template: "%s | Oluwaleke Abiodun",
+	},
+	description:
+		"Polyglot software engineer specializing in React, Next.js, React Native, Node.js, and Python. Building scalable web apps, mobile apps, and backend systems.",
 	keywords: [
-		"javascript developer, experienced developer, nodejs developer, frontend developer, java developer",
+		"Oluwaleke Abiodun",
+		"Full Stack Developer",
+		"Software Engineer",
+		"React Developer",
+		"Next.js Developer",
+		"React Native Developer",
+		"Node.js Developer",
+		"TypeScript Developer",
+		"Python Developer",
+		"Mobile App Developer",
+		"Web Developer Nigeria",
+		"Freelance Developer",
+		"API Development",
+		"PostgreSQL",
+		"Prisma",
+		"NestJS",
 	],
+	authors: [{ name: "Oluwaleke Abiodun", url: "https://oluwaleke.dev" }],
+	creator: "Oluwaleke Abiodun",
+	publisher: "Oluwaleke Abiodun",
+	robots: {
+		index: true,
+		follow: true,
+		googleBot: {
+			index: true,
+			follow: true,
+			"max-video-preview": -1,
+			"max-image-preview": "large",
+			"max-snippet": -1,
+		},
+	},
+	openGraph: {
+		type: "website",
+		locale: "en_US",
+		url: "https://oluwaleke.dev",
+		siteName: "Oluwaleke Abiodun",
+		title: "Oluwaleke Abiodun | Full Stack Software Engineer",
+		description:
+			"Polyglot software engineer building scalable web apps, mobile apps, and backend systems with React, Next.js, and Node.js.",
+		images: [
+			{
+				url: "/og-image.png",
+				width: 1200,
+				height: 630,
+				alt: "Oluwaleke Abiodun - Full Stack Software Engineer",
+			},
+		],
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: "Oluwaleke Abiodun | Full Stack Software Engineer",
+		description:
+			"Polyglot software engineer building scalable web apps, mobile apps, and backend systems.",
+		creator: "@a_short_dev",
+		images: ["/og-image.png"],
+	},
+	alternates: {
+		canonical: "https://oluwaleke.dev",
+	},
+	category: "technology",
 };
+
+import Navbar from "@/components/navbar";
 
 export default function RootLayout({
 	children,
@@ -47,52 +112,7 @@ export default function RootLayout({
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} ${marlish.variable} ${open_sans.variable} w-full dark:bg-slate-950 bg-background text-foreground antialiased min-h-screen font-sans`}
 			>
-				<header className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-auto max-w-[90vw]">
-					<div className="frosted-glass rounded-full px-6 py-3 flex items-center justify-between gap-6 md:gap-8 border border-white/10 shadow-2xl bg-black/50 backdrop-blur-xl">
-						<Link href="/" className="group relative flex items-center gap-2">
-							<div className="w-2 h-2 bg-accent rounded-full animate-pulse-slow" />
-							<span className="font-mono text-xs font-bold tracking-widest text-gold-gradient uppercase group-hover:brightness-110 transition-all duration-300">
-								AS_DEV
-							</span>
-						</Link>
-
-						<div className="w-[1px] h-4 bg-white/10 hidden md:block" />
-
-						<nav className="flex items-center gap-6 md:gap-8">
-							<Link
-								href="#projects"
-								className="text-[10px] uppercase tracking-widest text-white/60 hover:text-accent font-bold transition-colors duration-300"
-							>
-								Projects
-							</Link>
-							<Link
-								href="#skills-and-tools"
-								className="text-[10px] uppercase tracking-widest text-white/60 hover:text-accent font-bold transition-colors duration-300"
-							>
-								Skills
-							</Link>
-							<Link
-								href="https://devweaver.substack.com"
-								target="_blank"
-								className="text-[10px] uppercase tracking-widest text-white/60 hover:text-accent font-bold transition-colors duration-300"
-							>
-								Poems
-							</Link>
-							<Link
-								href="#about"
-								className="text-[10px] uppercase tracking-widest text-white/60 hover:text-accent font-bold transition-colors duration-300"
-							>
-								Cooking
-							</Link>
-							<Link
-								href="#contact"
-								className="text-[10px] uppercase tracking-widest text-black bg-accent px-3 py-1.5 rounded-sm font-black hover:bg-white transition-all duration-300"
-							>
-								Contact
-							</Link>
-						</nav>
-					</div>
-				</header>
+				<Navbar />
 				{children}
 				<FloatingChatButton />
 				<SpotifyWidget />

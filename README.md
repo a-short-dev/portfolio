@@ -30,6 +30,11 @@ I'm a **polyglot product engineer** focused on building things that **solve real
 | **Ubycohub**       | React, Tailwind, Framer Motion                     | High-conversion landing architecture for a tech hub ecosystem. |
 | **Oyo Crime Alert**| PHP, Laravel, MySQL                                | Mission-critical backend for state security. |
 | **NCC Tracking**   | Python, Real-time Processing                       | Live phone number lookup and tracking infrastructure. |
+| **Magic MediaTV**  | Next.js, Tailwind, Framer Motion                   | Film and media production company portfolio. |
+| **Vibe Protocol**  | Next.js, Prisma, PostgreSQL                        | Premium marketplace for code assets and design systems. |
+| **Dessy Multipurpose** | Next.js, Tailwind, TypeScript                  | Real estate and property development company website. |
+| **LaundryPro**     | Next.js, Prisma, PostgreSQL, AI                    | AI-powered SaaS for laundry business management. |
+| **ShareSpace**     | Next.js, Prisma, PostgreSQL                        | Fair item sharing app for roommates and families. |
 
 ---
 

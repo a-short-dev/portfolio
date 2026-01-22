@@ -4,10 +4,11 @@ import React, { useEffect, useRef } from "react";
 import HireMeForm from "@/components/hire-me-form";
 import AnimatedGridBackground from "@/components/animated-grid-background";
 import HeroSection from "@/components/hero-section";
-import ProjectsSection from "@/components/projects-section";
+import ProjectsSection, { Projects } from "@/components/projects-section";
 import SkillsSection from "@/components/skills-section";
 import AboutMeSection from "@/components/about-me-section";
 import Footer from "@/components/footer";
+import StructuredData from "@/components/structured-data";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -130,6 +131,16 @@ export default function Home() {
 
 	return (
 		<div ref={containerRef} className="relative overflow-hidden">
+			{/* Structured Data for SEO and AI */}
+			<StructuredData
+				projects={Projects.map((p) => ({
+					title: p.title,
+					description: p.description || "",
+					url: p.url,
+					techStack: p.techStack || [],
+				}))}
+			/>
+
 			{/* Animated Grid Background */}
 			<AnimatedGridBackground />
 
