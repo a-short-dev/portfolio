@@ -39,6 +39,50 @@ const Projects: ProductCardProps[] = [
 		className: "md:col-span-1 md:row-span-1",
 	},
 	{
+		url: "https://novoctplanet.vercel.app/",
+		title: "Novoct Planet",
+		description:
+			"Premium fashion e-commerce platform. Full catalog, cart, and checkout system.",
+		img: "/projects/novoct.png",
+		type: "contract",
+		techStack: ["Next.js", "Prisma", "PostgreSQL", "Tailwind"],
+		status: "ongoing",
+		className: "md:col-span-1 md:row-span-1",
+	},
+	{
+		url: "https://canwee.vercel.app/",
+		title: "Canwee Apartments",
+		description:
+			"Luxury short-let property management and booking platform for Nigeria.",
+		img: "/projects/canwee-apartments.png",
+		type: "contract",
+		techStack: ["Next.js", "Prisma", "PostgreSQL", "Tailwind"],
+		status: "ongoing",
+		className: "md:col-span-1 md:row-span-1",
+	},
+	{
+		url: "https://flexiti.vercel.app/",
+		title: "Flexiti",
+		description:
+			"Licensed consumer finance platform offering personal and business loans in Lagos.",
+		img: "/projects/flexiti.png",
+		type: "contract",
+		techStack: ["Next.js", "Prisma", "PostgreSQL", "Tailwind"],
+		status: "ongoing",
+		className: "md:col-span-1 md:row-span-1",
+	},
+	{
+		url: "https://uvo.vercel.app/",
+		title: "UVO",
+		description:
+			"Digital billboard advertising platform with client dashboard and booking system.",
+		img: "/projects/uvo.png",
+		type: "contract",
+		techStack: ["Next.js", "Prisma", "PostgreSQL", "Tailwind"],
+		status: "ongoing",
+		className: "md:col-span-1 md:row-span-1",
+	},
+	{
 		url: "https://ubycohub.com/",
 		title: "Ubycohub",
 		description:
