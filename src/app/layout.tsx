@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import Link from "next/link";
 import { Toaster } from "sonner";
 import FloatingChatButton from "@/components/floating-chat-button";
 import SpotifyWidget from "@/components/spotify-widget";
@@ -30,7 +29,7 @@ const open_sans = localFont({
 });
 
 export const metadata: Metadata = {
-	metadataBase: new URL("https://oluwaleke.dev"),
+	metadataBase: new URL("https://oluwaleke-dev.vercel.app"),
 	title: {
 		default: "Oluwaleke Abiodun | Full Stack Software Engineer",
 		template: "%s | Oluwaleke Abiodun",
@@ -55,7 +54,7 @@ export const metadata: Metadata = {
 		"Prisma",
 		"NestJS",
 	],
-	authors: [{ name: "Oluwaleke Abiodun", url: "https://oluwaleke.dev" }],
+	authors: [{ name: "Oluwaleke Abiodun", url: "https://oluwaleke-dev.vercel.app" }],
 	creator: "Oluwaleke Abiodun",
 	publisher: "Oluwaleke Abiodun",
 	robots: {
@@ -72,7 +71,7 @@ export const metadata: Metadata = {
 	openGraph: {
 		type: "website",
 		locale: "en_US",
-		url: "https://oluwaleke.dev",
+		url: "https://oluwaleke-dev.vercel.app",
 		siteName: "Oluwaleke Abiodun",
 		title: "Oluwaleke Abiodun | Full Stack Software Engineer",
 		description:
@@ -95,12 +94,12 @@ export const metadata: Metadata = {
 		images: ["/og-image.png"],
 	},
 	alternates: {
-		canonical: "https://oluwaleke.dev",
+		canonical: "https://oluwaleke-dev.vercel.app",
 	},
 	category: "technology",
 };
 
-import Navbar from "@/components/navbar";
+
 
 export default function RootLayout({
 	children,
@@ -112,7 +111,7 @@ export default function RootLayout({
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} ${marlish.variable} ${open_sans.variable} w-full dark:bg-slate-950 bg-background text-foreground antialiased min-h-screen font-sans`}
 			>
-				<Navbar />
+
 				{children}
 				<FloatingChatButton />
 				<SpotifyWidget />

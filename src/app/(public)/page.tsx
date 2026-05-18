@@ -1,7 +1,7 @@
 // Server Component — no "use client" directive
 
 import { Projects } from "@/data/projects";
-import HomeClient from "./home-client";
+import HomeClient from "../home-client";
 
 // ── JSON-LD schemas ───────────────────────────────────────────────────────────
 
@@ -91,7 +91,7 @@ function toJsonLd(schema: unknown): string {
 
 // ── Page (Server Component) ───────────────────────────────────────────────────
 
-export default function Home() {
+export default function HomePage() {
 	// Build SoftwareApplication schemas from the static Projects list
 	const projectSchemas = Projects.map((project) => ({
 		"@context": "https://schema.org",

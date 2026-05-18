@@ -49,7 +49,7 @@ const SpotifyWidget = () => {
 
 	useEffect(() => {
 		fetchSpotifyData();
-		const interval = setInterval(fetchSpotifyData, 10000);
+		const interval = setInterval(fetchSpotifyData, 30000);
 		return () => clearInterval(interval);
 	}, [fetchSpotifyData]);
 

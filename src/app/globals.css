@@ -40,6 +40,10 @@
 }
 
 @theme {
+  --font-sans: var(--font-open-sans), var(--font-geist-sans), sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
+  --font-marlish: var(--font-marlish), sans-serif;
+
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
