@@ -1,5 +1,5 @@
-import React from "react";
 import Link from "next/link";
+import React from "react";
 import { FaGithub, FaLinkedinIn, FaXTwitter } from "react-icons/fa6";
 
 export default function Footer() {

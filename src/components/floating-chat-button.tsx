@@ -1,10 +1,11 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import { Activity, Cpu, Send, Terminal, User, X } from "lucide-react";
 import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Send, Cpu, X, User, Activity, Terminal } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
+import WhatsAppLeadForm from "./whatsapp-lead-form";
 
 interface Message {
 	id: string;
@@ -31,6 +32,7 @@ interface Message {
 
 export default function FloatingChatButton() {
 	const [isOpen, setIsOpen] = useState(false);
+	const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
 	const [messages, setMessages] = useState<Message[]>([
 		{
 			id: "1",
@@ -46,16 +48,88 @@ export default function FloatingChatButton() {
 
 	const messagesEndRef = useRef<HTMLDivElement>(null);
 	const inputRef = useRef<HTMLInputElement>(null);
+	const chatContainerRef = useRef<HTMLDivElement>(null);
+	const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+	const isScrollingRef = useRef(false);
 
-	const scrollToBottom = useCallback(() => {
-		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+	const scrollToBottom = useCallback((force = false) => {
+		if (isScrollingRef.current && !force) return;
+
+		if (scrollTimeoutRef.current) {
+			clearTimeout(scrollTimeoutRef.current);
+		}
+
+		// Use requestAnimationFrame for smoother scrolling
+		requestAnimationFrame(() => {
+			if (messagesEndRef.current) {
+				isScrollingRef.current = true;
+				messagesEndRef.current.scrollIntoView({
+					behavior: force ? "auto" : "smooth",
+					block: "end",
+				});
+
+				// Reset scrolling flag after animation
+				scrollTimeoutRef.current = setTimeout(() => {
+					isScrollingRef.current = false;
+				}, 100);
+			}
+		});
 	}, []);
 
+	// Scroll on new messages with debouncing
 	useEffect(() => {
-		if (messages.length >= 0) {
-			scrollToBottom();
+		if (messages.length > 0) {
+			const lastMessage = messages[messages.length - 1];
+			// Force immediate scroll for user messages, smooth for AI
+			scrollToBottom(lastMessage.isUser);
 		}
 	}, [messages, scrollToBottom]);
+
+	// Mobile keyboard handling
+	useEffect(() => {
+		if (!isOpen) return;
+
+		const handleResize = () => {
+			// Detect if keyboard is open on mobile (viewport height changed)
+			if (inputRef.current && document.activeElement === inputRef.current) {
+				// Ensure input stays visible when keyboard opens
+				setTimeout(() => {
+					inputRef.current?.scrollIntoView({
+						behavior: "smooth",
+						block: "nearest",
+					});
+				}, 100);
+			}
+		};
+
+		const handleFocus = () => {
+			// Scroll to bottom when input is focused (keyboard appears)
+			setTimeout(() => {
+				scrollToBottom(true);
+			}, 300); // Delay for keyboard animation
+		};
+
+		const inputElement = inputRef.current;
+		if (inputElement) {
+			inputElement.addEventListener("focus", handleFocus);
+		}
+
+		window.addEventListener("resize", handleResize);
+		// Listen for visual viewport changes (better for mobile keyboards)
+		if (window.visualViewport) {
+			window.visualViewport.addEventListener("resize", handleResize);
+		}
+
+		return () => {
+			if (inputElement) {
+				inputElement.removeEventListener("focus", handleFocus);
+			}
+			window.removeEventListener("resize", handleResize);
+			if (window.visualViewport) {
+				window.visualViewport.removeEventListener("resize", handleResize);
+			}
+		};
+	}, [isOpen, scrollToBottom]);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -176,12 +250,7 @@ export default function FloatingChatButton() {
 	};
 
 	const handleWhatsAppTransfer = () => {
-		const phoneNumber = "+2348123456789";
-		const message = encodeURIComponent(
-			"Initiating direct secure channel for architectural consultation.",
-		);
-		const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
-		window.open(whatsappUrl, "_blank");
+		setIsLeadFormOpen(true);
 	};
 
 	const suggestedQuestions = [
@@ -229,7 +298,11 @@ export default function FloatingChatButton() {
 						animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
 						exit={{ opacity: 0, scale: 0.95, y: 40, x: 20 }}
 						transition={{ type: "spring", stiffness: 300, damping: 30 }}
-						className="fixed bottom-24 right-6 w-[calc(100vw-3rem)] sm:w-80 max-w-md h-[450px] bg-black border border-white/20 rounded-2xl shadow-2xl z-50 overflow-hidden flex flex-col font-mono"
+						className="fixed bottom-24 right-6 w-[calc(100vw-3rem)] sm:w-80 max-w-md bg-black border border-white/20 rounded-2xl shadow-2xl z-50 overflow-hidden flex flex-col font-mono"
+						style={{
+							height: "min(450px, calc(100vh - 200px))", // Adjust height based on viewport
+							maxHeight: "calc(100dvh - 120px)", // Use dynamic viewport height for mobile
+						}}
 					>
 						{/* Chat Header */}
 						<div className="bg-white text-black p-4 flex items-center justify-between border-b border-white/10">
@@ -243,7 +316,14 @@ export default function FloatingChatButton() {
 						</div>
 
 						{/* Messages */}
-						<div className="flex-1 overflow-y-auto p-4 space-y-4 bg-black text-xs scrollbar-thin scrollbar-thumb-white/20">
+						<div
+							ref={chatContainerRef}
+							className="flex-1 overflow-y-auto p-4 space-y-4 bg-black text-xs scrollbar-thin scrollbar-thumb-white/20 overscroll-contain"
+							style={{
+								scrollBehavior: "smooth",
+								WebkitOverflowScrolling: "touch",
+							}}
+						>
 							{messages.map((message) => (
 								<div
 									key={message.id}
@@ -311,6 +391,12 @@ export default function FloatingChatButton() {
 					</motion.div>
 				)}
 			</AnimatePresence>
+
+			{/* WhatsApp Lead Form Modal */}
+			<WhatsAppLeadForm
+				isOpen={isLeadFormOpen}
+				onClose={() => setIsLeadFormOpen(false)}
+			/>
 		</>
 	);
 }

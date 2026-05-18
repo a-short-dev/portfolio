@@ -1,42 +1,42 @@
 @import "tailwindcss";
 
 :root {
-  /* Monochrome "Polyglot" Theme: Void, Alabaster, Graphite */
-  --background: 0 0% 2%;
-  /* #050505 - Deep Void */
-  --foreground: 0 0% 98%;
-  /* #FAFAFA - Alabaster */
+	/* Monochrome "Polyglot" Theme: Void, Alabaster, Graphite */
+	--background: 0 0% 2%;
+	/* #050505 - Deep Void */
+	--foreground: 0 0% 98%;
+	/* #FAFAFA - Alabaster */
 
-  --primary: 0 0% 100%;
-  /* #FFFFFF - Pure White (Active/Highlight) */
-  --primary-foreground: 0 0% 0%;
+	--primary: 0 0% 100%;
+	/* #FFFFFF - Pure White (Active/Highlight) */
+	--primary-foreground: 0 0% 0%;
 
-  --secondary: 0 0% 25%;
-  /* #404040 - Graphite (Subtle elements) */
-  --secondary-foreground: 0 0% 98%;
+	--secondary: 0 0% 25%;
+	/* #404040 - Graphite (Subtle elements) */
+	--secondary-foreground: 0 0% 98%;
 
-  --accent: 0 0% 45%;
-  /* #737373 - Silver (Icons/Meta) */
-  --accent-foreground: 0 0% 98%;
+	--accent: 0 0% 45%;
+	/* #737373 - Silver (Icons/Meta) */
+	--accent-foreground: 0 0% 98%;
 
-  --muted: 0 0% 9%;
-  /* #171717 - Charcoal (Card backgrounds) */
-  --muted-foreground: 0 0% 60%;
+	--muted: 0 0% 9%;
+	/* #171717 - Charcoal (Card backgrounds) */
+	--muted-foreground: 0 0% 60%;
 
-  --card: 0 0% 4%;
-  /* Slight lift from background */
-  --card-foreground: 0 0% 98%;
+	--card: 0 0% 4%;
+	/* Slight lift from background */
+	--card-foreground: 0 0% 98%;
 
-  --popover: 0 0% 4%;
-  --popover-foreground: 0 0% 98%;
+	--popover: 0 0% 4%;
+	--popover-foreground: 0 0% 98%;
 
-  --border: 0 0% 15%;
-  /* #262626 - Zinc */
-  --input: 0 0% 15%;
-  --ring: 0 0% 100%;
+	--border: 0 0% 15%;
+	/* #262626 - Zinc */
+	--input: 0 0% 15%;
+	--ring: 0 0% 100%;
 
-  --radius: 0.125rem;
-  /* Sharp, precise corners */
+	--radius: 0.125rem;
+	/* Sharp, precise corners */
 }
 
 @theme {
@@ -140,9 +140,9 @@
 }
 
 @keyframes shine {
-  to {
-    background-position: 200% center;
-  }
+	to {
+		background-position: 200% center;
+	}
 }
 
 @utility mono-border {
@@ -166,11 +166,11 @@
 
 /* Base Styles */
 body {
-  @apply bg-background text-foreground antialiased font-sans selection:bg-white selection:text-black;
-  background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 50px 50px;
+	@apply bg-background text-foreground antialiased font-sans selection:bg-white selection:text-black;
+	background-image:
+		linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+		linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+	background-size: 50px 50px;
 }
 
 h1,
@@ -179,32 +179,32 @@ h3,
 h4,
 h5,
 h6 {
-  @apply tracking-tight font-bold text-white;
+	@apply tracking-tight font-bold text-white;
 }
 
 code,
 pre {
-  @apply font-mono text-sm text-foreground/80;
+	@apply font-mono text-sm text-foreground/80;
 }
 
 /* Custom Scrollbar for Chrome/Safari/Edge */
 ::-webkit-scrollbar {
-  width: 6px;
+	width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+	background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-white/20 rounded-full hover:bg-white/40 transition-colors;
+	@apply bg-white/20 rounded-full hover:bg-white/40 transition-colors;
 }
 
 /* Utility for text hierarchy */
 .text-gentle {
-  @apply text-foreground/60;
+	@apply text-foreground/60;
 }
 
 .text-muted {
-  @apply text-foreground/40;
+	@apply text-foreground/40;
 }

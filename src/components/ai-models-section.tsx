@@ -1,9 +1,9 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
+import { Activity, Cpu, Github, Send, Terminal } from "lucide-react";
 import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Cpu, Send, Terminal, Activity, Github } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 
 interface Message {
 	id: string;

@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
-import Link from "next/link";
-import { FaGithub, FaLinkedinIn, FaXTwitter } from "react-icons/fa6";
 import { gsap } from "gsap";
+import Link from "next/link";
+import type React from "react";
+import { useEffect, useRef } from "react";
+import { FaGithub, FaLinkedinIn, FaXTwitter } from "react-icons/fa6";
 
 interface HeroSectionProps {
 	heroRef: React.RefObject<HTMLDivElement | null>;

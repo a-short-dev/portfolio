@@ -1,174 +1,137 @@
-"use client";
+// Server Component — no "use client" directive
 
-import React, { useEffect, useRef } from "react";
-import HireMeForm from "@/components/hire-me-form";
-import AnimatedGridBackground from "@/components/animated-grid-background";
-import HeroSection from "@/components/hero-section";
-import ProjectsSection, { Projects } from "@/components/projects-section";
-import SkillsSection from "@/components/skills-section";
-import AboutMeSection from "@/components/about-me-section";
-import Footer from "@/components/footer";
-import StructuredData from "@/components/structured-data";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Projects } from "@/data/projects";
+import HomeClient from "./home-client";
 
-// Register GSAP plugins
-if (typeof window !== "undefined") {
-	gsap.registerPlugin(ScrollTrigger);
+// ── JSON-LD schemas ───────────────────────────────────────────────────────────
+
+const personSchema = {
+	"@context": "https://schema.org",
+	"@type": "Person",
+	name: "Oluwaleke Abiodun",
+	alternateName: "Leke",
+	jobTitle: "Full Stack Software Engineer",
+	description:
+		"Polyglot software engineer specializing in React, Next.js, React Native, Node.js, and Python. Building scalable web apps, mobile apps, and backend systems.",
+	url: "https://oluwaleke.dev",
+	image: "https://oluwaleke.dev/og-image.png",
+	sameAs: [
+		"https://twitter.com/a_short_dev",
+		"https://instagram.com/a-short-dev",
+		"https://github.com/a-short-dev",
+		"https://devweaver.substack.com",
+	],
+	knowsAbout: [
+		"React",
+		"Next.js",
+		"React Native",
+		"TypeScript",
+		"Node.js",
+		"Python",
+		"PostgreSQL",
+		"Prisma",
+		"NestJS",
+		"Mobile App Development",
+		"Web Development",
+		"API Development",
+	],
+	worksFor: {
+		"@type": "Organization",
+		name: "Freelance",
+	},
+};
+
+const websiteSchema = {
+	"@context": "https://schema.org",
+	"@type": "WebSite",
+	name: "Oluwaleke Abiodun Portfolio",
+	url: "https://oluwaleke.dev",
+	description: "Portfolio of Oluwaleke Abiodun — Full Stack Software Engineer",
+	author: {
+		"@type": "Person",
+		name: "Oluwaleke Abiodun",
+	},
+	potentialAction: {
+		"@type": "SearchAction",
+		target: {
+			"@type": "EntryPoint",
+			urlTemplate: "https://oluwaleke.dev/?q={search_term_string}",
+		},
+		"query-input": "required name=search_term_string",
+	},
+};
+
+const profilePageSchema = {
+	"@context": "https://schema.org",
+	"@type": "ProfilePage",
+	dateCreated: "2024-01-01T00:00:00Z",
+	dateModified: new Date().toISOString(),
+	mainEntity: {
+		"@type": "Person",
+		name: "Oluwaleke Abiodun",
+		alternateName: "Leke",
+		identifier: "a-short-dev",
+		description:
+			"Polyglot software engineer specializing in React, Next.js, React Native, Node.js, and Python.",
+		image: "https://oluwaleke.dev/og-image.png",
+		sameAs: [
+			"https://github.com/a-short-dev",
+			"https://twitter.com/a_short_dev",
+		],
+	},
+};
+
+/**
+ * Safely serialise a schema object to a JSON-LD string.
+ * Replaces `<` with its unicode escape to prevent XSS via script injection.
+ */
+function toJsonLd(schema: unknown): string {
+	return JSON.stringify(schema).replace(/</g, "\\u003c");
 }
 
+// ── Page (Server Component) ───────────────────────────────────────────────────
+
 export default function Home() {
-	const containerRef = useRef<HTMLDivElement>(null);
-	const heroRef = useRef<HTMLDivElement>(null);
-	const projectsRef = useRef<HTMLDivElement>(null);
-	const skillsRef = useRef<HTMLDivElement>(null);
-
-	useEffect(() => {
-		if (typeof window === "undefined") return;
-
-		const ctx = gsap.context(() => {
-			// Hero section animations with improved performance
-			gsap.set(
-				[".hero-title", ".hero-subtitle", ".hero-description", ".hero-social"],
-				{
-					opacity: 0,
-					willChange: "transform, opacity",
-				},
-			);
-
-			const heroTl = gsap.timeline();
-
-			heroTl
-				.fromTo(
-					".hero-title",
-					{ y: 100, opacity: 0 },
-					{ y: 0, opacity: 1, duration: 1.2, ease: "power3.out" },
-				)
-				.fromTo(
-					".hero-subtitle",
-					{ y: 50, opacity: 0 },
-					{ y: 0, opacity: 1, duration: 1, ease: "power3.out" },
-					"-=0.9",
-				)
-				.fromTo(
-					".hero-description",
-					{ y: 30, opacity: 0 },
-					{ y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
-					"-=0.6",
-				)
-				.fromTo(
-					".hero-social",
-					{ scale: 0, opacity: 0 },
-					{ scale: 1, opacity: 1, duration: 0.6, ease: "back.out(1.7)" },
-					"-=0.3",
-				);
-
-			// Scroll-triggered animations for sections
-			gsap.utils.toArray(".section-reveal").forEach((section: any) => {
-				gsap.fromTo(
-					section,
-					{ y: 100, opacity: 0 },
-					{
-						y: 0,
-						opacity: 1,
-						duration: 1,
-						ease: "power3.out",
-						scrollTrigger: {
-							trigger: section,
-							start: "top 80%",
-							end: "bottom 20%",
-							toggleActions: "play none none reverse",
-						},
-					},
-				);
-			});
-
-			// Optimized card hover animations
-			gsap.utils.toArray(".card-hover").forEach((card: any) => {
-				const glow = card.querySelector(".card-glow");
-
-				gsap.set(card, { willChange: "transform" });
-				gsap.set(glow, { willChange: "opacity" });
-
-				const tl = gsap.timeline({ paused: true });
-				tl.to(card, {
-					scale: 1.05,
-					duration: 0.2,
-					ease: "power2.out",
-					force3D: true,
-				}).to(
-					glow,
-					{
-						opacity: 1,
-						duration: 0.2,
-					},
-					0,
-				);
-
-				card.addEventListener("mouseenter", () => {
-					tl.timeScale(1).play();
-				});
-				card.addEventListener("mouseleave", () => {
-					tl.timeScale(1.5).reverse();
-				});
-			});
-
-			// Parallax effect for background elements
-			gsap.to(".parallax-slow", {
-				yPercent: -50,
-				ease: "none",
-				scrollTrigger: {
-					trigger: containerRef.current,
-					start: "top bottom",
-					end: "bottom top",
-					scrub: true,
-				},
-			});
-		}, containerRef);
-
-		return () => ctx.revert();
-	}, []);
+	// Build SoftwareApplication schemas from the static Projects list
+	const projectSchemas = Projects.map((project) => ({
+		"@context": "https://schema.org",
+		"@type": "SoftwareApplication",
+		name: project.title,
+		description: project.description ?? "",
+		url: project.url,
+		applicationCategory: "WebApplication",
+		author: {
+			"@type": "Person",
+			name: "Oluwaleke Abiodun",
+		},
+		keywords: (project.techStack ?? []).join(", "),
+	}));
 
 	return (
-		<div ref={containerRef} className="relative overflow-hidden">
-			{/* Structured Data for SEO and AI */}
-			<StructuredData
-				projects={Projects.map((p) => ({
-					title: p.title,
-					description: p.description || "",
-					url: p.url,
-					techStack: p.techStack || [],
-				}))}
+		<>
+			{/* ── Structured Data (server-rendered, immediately crawlable) ──────── */}
+			<script
+				type="application/ld+json"
+				dangerouslySetInnerHTML={{ __html: toJsonLd(personSchema) }}
 			/>
+			<script
+				type="application/ld+json"
+				dangerouslySetInnerHTML={{ __html: toJsonLd(websiteSchema) }}
+			/>
+			<script
+				type="application/ld+json"
+				dangerouslySetInnerHTML={{ __html: toJsonLd(profilePageSchema) }}
+			/>
+			{projectSchemas.map((schema, i) => (
+				<script
+					key={`project-ld-${i}`}
+					type="application/ld+json"
+					dangerouslySetInnerHTML={{ __html: toJsonLd(schema) }}
+				/>
+			))}
 
-			{/* Animated Grid Background */}
-			<AnimatedGridBackground />
-
-			<div className="relative z-10 w-full">
-				<main>
-					{/* Hero Section */}
-					<HeroSection heroRef={heroRef} />
-
-					{/* Projects Section */}
-					<ProjectsSection projectsRef={projectsRef} />
-
-					{/* Skills Section */}
-					<SkillsSection skillsRef={skillsRef} />
-
-					{/* AI Models Section - Now available as floating chat button */}
-
-					{/* About Me Section */}
-					<AboutMeSection />
-
-					{/* Contact Form */}
-					<section id="contact" className="section-reveal py-32">
-						<HireMeForm />
-					</section>
-
-					{/* Footer */}
-					<Footer />
-				</main>
-			</div>
-		</div>
+			{/* ── Interactive shell (client component handles GSAP) ────────────── */}
+			<HomeClient />
+		</>
 	);
 }

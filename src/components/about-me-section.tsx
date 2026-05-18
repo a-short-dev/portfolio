@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
 import { motion } from "framer-motion";
+import React from "react";
 import { FaFeatherAlt, FaUtensils } from "react-icons/fa";
 import { SiSubstack } from "react-icons/si";
 

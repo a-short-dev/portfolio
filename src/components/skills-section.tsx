@@ -1,24 +1,24 @@
 "use client";
 
-import React from "react";
 import { motion } from "framer-motion";
+import type React from "react";
 import {
 	FaAndroid,
 	FaApple,
-	FaReact,
-	FaPhp,
-	FaPython,
 	FaJava,
 	FaNodeJs,
+	FaPhp,
+	FaPython,
+	FaReact,
 	FaWindows,
 } from "react-icons/fa";
 import {
-	SiKotlin,
-	SiTypescript,
 	SiElectron,
-	SiSupabase,
+	SiKotlin,
 	SiPostgresql,
+	SiSupabase,
 	SiSwift,
+	SiTypescript,
 } from "react-icons/si";
 
 interface Attributes {

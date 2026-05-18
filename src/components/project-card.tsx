@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import type React from "react";
 import { cn } from "@/lib/utils";
 
 export type ProductCardProps = {
@@ -38,6 +38,7 @@ const ProjectCard: React.FC<ProductCardProps> = ({
 						src={img}
 						alt={title}
 						fill
+						sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 						className="object-cover transition-transform duration-700 group-hover:scale-105 grayscale group-hover:grayscale-0 opacity-80 group-hover:opacity-100"
 					/>
 					{/* Status badge */}
