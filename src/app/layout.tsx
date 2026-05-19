@@ -4,7 +4,7 @@ import "./globals.css";
 import { headers } from "next/headers";
 import { Toaster } from "sonner";
 import FloatingChatButton from "@/components/floating-chat-button";
-import SpotifyWidget from "@/components/spotify-widget";
+// import SpotifyWidget from "@/components/spotify-widget";
 
 const geistSans = localFont({
 	src: "./fonts/GeistVF.woff",
@@ -117,7 +117,7 @@ export default async function RootLayout({
 			>
 				{children}
 				<FloatingChatButton />
-				<SpotifyWidget />
+				{/* <SpotifyWidget /> */}
 				<Toaster />
 			</body>
 		</html>
