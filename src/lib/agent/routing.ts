@@ -1,22 +1,17 @@
 import type { RouteDecision } from "./types";
 
 export const MODEL_FALLBACKS: Record<string, string[]> = {
-  "google/gemma-4-31b-it:free": [
-    "google/gemma-4-26b-a4b-it:free",
+  "z-ai/glm-4.5-air:free": [
     "openai/gpt-oss-120b:free",
-    "z-ai/glm-4.5-air:free",
     "nvidia/nemotron-3-super-120b-a12b:free",
   ],
-  "qwen/qwen3-coder:free": [
+  "openai/gpt-oss-120b:free": [
     "z-ai/glm-4.5-air:free",
-    "openai/gpt-oss-120b:free",
-    "google/gemma-4-31b-it:free",
     "nvidia/nemotron-3-super-120b-a12b:free",
   ],
   "openrouter/owl-alpha": [
-    "deepseek/deepseek-v4-flash:free",
     "nvidia/nemotron-nano-12b-v2-vl:free",
-    "google/gemma-4-31b-it:free",
+    "openai/gpt-oss-120b:free",
   ],
 };
 
@@ -51,10 +46,10 @@ export function routeToModel(message: string): RouteDecision {
 
   if (isMarketing) {
     return {
-      model: "google/gemma-4-31b-it:free", // Elite-parameter copywriter/marketing model
+      model: "z-ai/glm-4.5-air:free", // Elite-parameter copywriter/marketing model (Working)
       category: "marketing",
       explanation:
-        "Routed to Gemma-4-31B for high-parameter copywriting and marketing response.",
+        "Routed to GLM-4.5 Air for high-parameter copywriting and marketing response.",
     };
   }
 
@@ -96,16 +91,16 @@ export function routeToModel(message: string): RouteDecision {
 
   if (isTechnical) {
     return {
-      model: "qwen/qwen3-coder:free", // Next-gen programming-centric model
+      model: "openai/gpt-oss-120b:free", // Next-gen programming-centric model (Working)
       category: "technical",
       explanation:
-        "Routed to Qwen-3 Coder for advanced technical architecture and code assistance.",
+        "Routed to GPT-OSS 120B for advanced technical architecture and code assistance.",
     };
   }
 
   // 3. Fallback / Standard Conversational
   return {
-    model: "openrouter/owl-alpha", // Elite conversational & general reasoning agent
+    model: "openrouter/owl-alpha", // Elite conversational & general reasoning agent (Working)
     category: "general",
     explanation:
       "Routed to OpenRouter Owl Alpha for optimal general-purpose conversation.",

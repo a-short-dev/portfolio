@@ -185,6 +185,47 @@ export async function POST(request: NextRequest) {
         let tokenCount = 0;
         const requestStartTime = Date.now();
 
+        // Safe enqueue helper to avoid "Controller is already closed" uncaught exceptions
+        const safeEnqueue = (data: Uint8Array) => {
+          try {
+            if (controller.desiredSize !== null) {
+              controller.enqueue(data);
+            }
+          } catch (e) {
+            console.warn("[Agent Router] Stream closed during enqueue:", e);
+          }
+        };
+
+        // Mask internal model endpoints for standard visitors to protect proprietary IP
+        const getMaskedModel = (rawModel: string): string => {
+          if (isOwner) return rawModel;
+          if (rawModel.includes("gemma") || rawModel.includes("glm")) return "Weaver Marketing v3 (Custom)";
+          if (rawModel.includes("qwen") || rawModel.includes("gpt")) return "Weaver Systems Coder v3 (Custom)";
+          return "Weaver Assistant (Custom)";
+        };
+
+        // Send initial stats immediately to reset proxy/client connection timeouts
+        const initialStats = {
+          type: "stats",
+          data: {
+            model: getMaskedModel(targetModel),
+            inputTokens: Math.ceil(
+              (typeof message === "string" ? message.length : JSON.stringify(message).length) / 4,
+            ),
+            temperature: 0.7,
+            maxTokens: 1000,
+            requestTime: new Date().toISOString(),
+            clientIP: `${clientIP.substring(0, 8)}...`,
+            visitorType: visitorType,
+            agentRouting: {
+              routedCategory: routing.category,
+              explanation: routing.explanation,
+              learnedQuestionsCount: memory.totalQuestionsCount,
+            },
+          },
+        };
+        safeEnqueue(encoder.encode(`data: ${JSON.stringify(initialStats)}\n\n`));
+
         for (const modelCandidate of modelExecutionList) {
           try {
             console.log(
@@ -211,9 +252,10 @@ export async function POST(request: NextRequest) {
             const textStream = res.getTextStream();
             const iterator = textStream[Symbol.asyncIterator]();
 
-            // Set a 6-second timeout limit to get the first chunk of data.
-            // If the model candidate is overloaded or unresponsive, we fail-fast and switch to the next fallback candidate.
-            const FIRST_TOKEN_TIMEOUT_MS = 6000;
+            // Set a 20-second timeout limit to get the first chunk of data.
+            // Free-tier OpenRouter models under load can have a high Time-to-First-Token (TTFT) of 10-20 seconds.
+            // Since maxDuration is 60s, a 20s candidate timeout protects against complete hangs while leaving headroom for fallbacks.
+            const FIRST_TOKEN_TIMEOUT_MS = 20000;
             const firstResult = await Promise.race([
               iterator.next(),
               new Promise<never>((_, reject) =>
@@ -233,39 +275,16 @@ export async function POST(request: NextRequest) {
                 success = true;
                 selectedModel = modelCandidate;
 
-                // Mask internal model endpoints for standard visitors to protect proprietary IP
-                const getMaskedModel = (rawModel: string): string => {
-                  if (isOwner) return rawModel;
-                  if (rawModel.includes("gemma")) return "Weaver Marketing v3 (Custom)";
-                  if (rawModel.includes("qwen")) return "Weaver Systems Coder v3 (Custom)";
-                  return "Weaver Reasoning Engine v3 (Custom)";
-                };
-
-                // Enqueue initial stats with agent metadata
-                const initialStats = {
-                  type: "stats",
-                  data: {
-                    model: getMaskedModel(selectedModel),
-                    inputTokens: Math.ceil(
-                      (typeof modelInput === "string"
-                        ? modelInput.length
-                        : JSON.stringify(modelInput).length) / 4,
-                    ),
-                    temperature: 0.7,
-                    maxTokens: 1000,
-                    requestTime: new Date().toISOString(),
-                    clientIP: `${clientIP.substring(0, 8)}...`,
-                    visitorType: visitorType,
-                    agentRouting: {
-                      routedCategory: routing.category,
-                      explanation: routing.explanation,
-                      learnedQuestionsCount: memory.totalQuestionsCount,
+                // Update client if we successfully connected with a fallback candidate
+                if (selectedModel !== targetModel) {
+                  const fallbackStats = {
+                    type: "stats",
+                    data: {
+                      model: getMaskedModel(selectedModel),
                     },
-                  },
-                };
-                controller.enqueue(
-                  encoder.encode(`data: ${JSON.stringify(initialStats)}\n\n`),
-                );
+                  };
+                  safeEnqueue(encoder.encode(`data: ${JSON.stringify(fallbackStats)}\n\n`));
+                }
               }
 
               if (content) {
@@ -276,9 +295,7 @@ export async function POST(request: NextRequest) {
                   type: "content",
                   data: { content },
                 };
-                controller.enqueue(
-                  encoder.encode(`data: ${JSON.stringify(streamData)}\n\n`),
-                );
+                safeEnqueue(encoder.encode(`data: ${JSON.stringify(streamData)}\n\n`));
               }
 
               chunkResult = await iterator.next();
@@ -303,10 +320,10 @@ export async function POST(request: NextRequest) {
             type: "error",
             data: { message: "Stream interrupted" },
           };
-          controller.enqueue(
-            encoder.encode(`data: ${JSON.stringify(errorData)}\n\n`),
-          );
-          controller.close();
+          safeEnqueue(encoder.encode(`data: ${JSON.stringify(errorData)}\n\n`));
+          try {
+            controller.close();
+          } catch {}
           return;
         }
 
@@ -323,14 +340,14 @@ export async function POST(request: NextRequest) {
             completionTime: new Date().toISOString(),
           },
         };
-        controller.enqueue(
-          encoder.encode(`data: ${JSON.stringify(finalStats)}\n\n`),
-        );
+        safeEnqueue(encoder.encode(`data: ${JSON.stringify(finalStats)}\n\n`));
 
         console.log(
           `✅ Agent Chat Successful - IP: ${clientIP}, Model: ${selectedModel}, Category: ${routing.category}, Time: ${responseTime}ms`,
         );
-        controller.close();
+        try {
+          controller.close();
+        } catch {}
       },
     });
 
