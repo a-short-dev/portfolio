@@ -1,16 +1,19 @@
 {
-  "totalQuestionsCount": 33,
-  "topicsOfInterest": {
-    "e-commerce": 4,
-    "mobile-apps": 0,
-    "fintech": 0,
-    "rust-systems": 1,
-    "consultation": 1,
-    "pricing-inquiries": 1
-  },
-  "learnedInsights": [
-    "Visitors want high-performance, fast-loading responsive solutions.",
-    "Highlighting WhatsApp contact +234 916 591 3234 is highly effective."
-  ],
-  "lastUpdated": "2026-05-19T02:07:52.355Z"
+	"totalQuestionsCount": 33,
+	"topicsOfInterest": {
+		"e-commerce": 4,
+		"mobile-apps": 0,
+		"fintech": 0,
+		"rust-systems": 1,
+		"consultation": 1,
+		"pricing-inquiries": 1,
+		"php": 0,
+		"wordpress": 0,
+		"wordpress-plugins": 0
+	},
+	"learnedInsights": [
+		"Visitors want high-performance, fast-loading responsive solutions.",
+		"Highlighting WhatsApp contact +234 916 591 3234 is highly effective."
+	],
+	"lastUpdated": "2026-05-19T02:07:52.355Z"
 }

@@ -1,41 +1,50 @@
-import * as fs from "node:fs/promises";
-import * as path from "node:path";
+import { Redis } from "@upstash/redis";
 import type { AgentMemory } from "./types";
 
-const MEMORY_FILE_PATH = path.join(process.cwd(), "src/data/agent-memory.json");
+const redis = Redis.fromEnv();
+const MEMORY_KEY = "portfolio:agent_memory";
+
+const defaultMemory: AgentMemory = {
+  totalQuestionsCount: 0,
+  topicsOfInterest: {
+    "e-commerce": 0,
+    "mobile-apps": 0,
+    fintech: 0,
+    "rust-systems": 0,
+    consultation: 0,
+    "pricing-inquiries": 0,
+    "php": 0,
+    "wordpress": 0,
+    "wordpress-plugins": 0
+  },
+  learnedInsights: [
+    "Visitors want high-performance, fast-loading responsive solutions.",
+    "Highlighting WhatsApp contact +234 916 591 3234 is highly effective.",
+  ],
+  lastUpdated: new Date().toISOString(),
+};
 
 export async function getAgentMemory(): Promise<AgentMemory> {
   try {
-    const data = await fs.readFile(MEMORY_FILE_PATH, "utf-8");
-    return JSON.parse(data) as AgentMemory;
-  } catch {
-    // Initialize default memory if file doesn't exist
-    const defaultMemory: AgentMemory = {
-      totalQuestionsCount: 0,
-      topicsOfInterest: {
-        "e-commerce": 0,
-        "mobile-apps": 0,
-        fintech: 0,
-        "rust-systems": 0,
-        consultation: 0,
-        "pricing-inquiries": 0,
-      },
-      learnedInsights: [
-        "Visitors want high-performance, fast-loading responsive solutions.",
-        "Highlighting WhatsApp contact +234 916 591 3234 is highly effective.",
-      ],
-      lastUpdated: new Date().toISOString(),
-    };
-    try {
-      await fs.mkdir(path.dirname(MEMORY_FILE_PATH), { recursive: true });
-      await fs.writeFile(
-        MEMORY_FILE_PATH,
-        JSON.stringify(defaultMemory, null, 2),
-        "utf-8",
-      );
-    } catch (e) {
-      console.error("Failed to initialize memory file:", e);
+    const data = await redis.get<AgentMemory>(MEMORY_KEY);
+    if (!data) {
+      // Initialize Redis cache with default
+      await redis.set(MEMORY_KEY, defaultMemory);
+      return defaultMemory;
     }
+
+    // Fallback merge to ensure structure completeness if keys are missing
+    return {
+      totalQuestionsCount: data.totalQuestionsCount ?? defaultMemory.totalQuestionsCount,
+      topicsOfInterest: {
+        ...defaultMemory.topicsOfInterest,
+        ...(data.topicsOfInterest || {}),
+      },
+      learnedInsights: data.learnedInsights ?? defaultMemory.learnedInsights,
+      lastUpdated: data.lastUpdated ?? defaultMemory.lastUpdated,
+    };
+  } catch (error) {
+    console.error("Failed to get agent memory from Redis:", error);
     return defaultMemory;
   }
 }
@@ -147,12 +156,8 @@ export async function learnFromQuestion(message: string): Promise<void> {
     }
 
     memory.lastUpdated = new Date().toISOString();
-    await fs.writeFile(
-      MEMORY_FILE_PATH,
-      JSON.stringify(memory, null, 2),
-      "utf-8",
-    );
+    await redis.set(MEMORY_KEY, memory);
   } catch (error) {
-    console.error("Error writing agent memory:", error);
+    console.error("Error writing agent memory to Redis:", error);
   }
 }
