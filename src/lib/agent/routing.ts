@@ -76,6 +76,21 @@ export function routeToModel(message: string): RouteDecision {
     "refactor",
     "complexity",
     "algorithm",
+    "code",
+    "coding",
+    "ios",
+    "android",
+    "mobile",
+    "app",
+    "apps",
+    "react",
+    "native",
+    "swift",
+    "kotlin",
+    "next",
+    "backend",
+    "frontend",
+    "api",
   ];
   const isTechnical = technicalKeywords.some((kw) => lower.includes(kw));
 

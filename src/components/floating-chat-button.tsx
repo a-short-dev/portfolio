@@ -160,13 +160,24 @@ export default function FloatingChatButton() {
 
 		setMessages((prev) => [...prev, initialAiMessage]);
 
+		// Prepare chat history payload (excluding active local state changes since setMessages is async)
+		const chatHistory = messages
+			.map((msg) => ({
+				role: msg.isUser ? "user" : "assistant",
+				content: msg.content,
+			}))
+			.filter((msg) => msg.content.trim() !== "");
+
 		try {
 			const response = await fetch("/api/chat", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({ message: currentInput }),
+				body: JSON.stringify({
+					message: currentInput,
+					history: chatHistory,
+				}),
 			});
 
 			if (!response.ok) {

@@ -40,7 +40,28 @@ export async function getAgentMemory(): Promise<AgentMemory> {
   }
 }
 
+const SENSITIVE_PATTERNS = [
+  // Email addresses
+  /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/,
+  // Phone numbers
+  /\b(?:\+\d{1,3}[- ]?)?\(?\d{3}\)?[- ]?\d{3}[- ]?\d{4}\b/,
+  // Credentials / key pairs / secrets
+  /(?:password|passwd|pass|key|secret|token|auth|credential|api[-_]?key)(?:\s*[:=]\s*|\s+)\S+/i,
+  // Credit card strings
+  /\b(?:\d[ -]*?){13,16}\b/,
+];
+
 export async function learnFromQuestion(message: string): Promise<void> {
+  // Pre-flight PII / sensitive data check to safeguard privacy
+  for (const pattern of SENSITIVE_PATTERNS) {
+    if (pattern.test(message)) {
+      console.warn(
+        "[Memory Security] Sensitive pattern matched. Aborting memory learning for privacy.",
+      );
+      return;
+    }
+  }
+
   try {
     const memory = await getAgentMemory();
     memory.totalQuestionsCount += 1;

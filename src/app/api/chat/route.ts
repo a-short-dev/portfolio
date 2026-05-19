@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { message } = await request.json();
+    const { message, history } = await request.json();
 
     // 2. Input Guardrails Check
     const guardrail = runInputGuardrails(message || "");
@@ -100,10 +100,21 @@ export async function POST(request: NextRequest) {
             console.log(
               `[Agent Router] Attempting stream with model: ${modelCandidate}`,
             );
+            const modelInput =
+              history && Array.isArray(history) && history.length > 0
+                ? [
+                    ...history.map((msg: any) => ({
+                      role: msg.role === "user" ? "user" : "assistant",
+                      content: msg.content,
+                    })),
+                    { role: "user", content: message },
+                  ]
+                : message;
+
             const res = openRouter.callModel({
               model: modelCandidate,
               instructions: systemPrompt,
-              input: message,
+              input: modelInput,
             });
 
             for await (const content of res.getTextStream()) {
@@ -115,7 +126,11 @@ export async function POST(request: NextRequest) {
                   type: "stats",
                   data: {
                     model: selectedModel,
-                    inputTokens: Math.ceil(message.length / 4),
+                    inputTokens: Math.ceil(
+                      (typeof modelInput === "string"
+                        ? modelInput.length
+                        : JSON.stringify(modelInput).length) / 4,
+                    ),
                     temperature: 0.7,
                     maxTokens: 1000,
                     requestTime: new Date().toISOString(),
