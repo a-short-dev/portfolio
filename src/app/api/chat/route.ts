@@ -6,6 +6,8 @@ import { constructSystemPrompt } from "@/lib/agent/prompt";
 import { getClientIP, isRateLimited } from "@/lib/agent/rate-limiter";
 import { MODEL_FALLBACKS, routeToModel } from "@/lib/agent/routing";
 
+export const maxDuration = 60; // Extend Vercel runtime function timeout to maximum allowed 60 seconds
+
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 
 export async function POST(request: NextRequest) {
@@ -205,7 +207,28 @@ export async function POST(request: NextRequest) {
               input: modelInput,
             });
 
-            for await (const content of res.getTextStream()) {
+            // Get async iterator to handle Time to First Token (TTFT) timeout
+            const textStream = res.getTextStream();
+            const iterator = textStream[Symbol.asyncIterator]();
+
+            // Set a 6-second timeout limit to get the first chunk of data.
+            // If the model candidate is overloaded or unresponsive, we fail-fast and switch to the next fallback candidate.
+            const FIRST_TOKEN_TIMEOUT_MS = 6000;
+            const firstResult = await Promise.race([
+              iterator.next(),
+              new Promise<never>((_, reject) =>
+                setTimeout(
+                  () => reject(new Error(`Timeout waiting for first token from ${modelCandidate}`)),
+                  FIRST_TOKEN_TIMEOUT_MS,
+                )
+              ),
+            ]);
+
+            let chunkResult = firstResult;
+
+            while (!chunkResult.done) {
+              const content = chunkResult.value;
+
               if (!success) {
                 success = true;
                 selectedModel = modelCandidate;
@@ -257,6 +280,8 @@ export async function POST(request: NextRequest) {
                   encoder.encode(`data: ${JSON.stringify(streamData)}\n\n`),
                 );
               }
+
+              chunkResult = await iterator.next();
             }
 
             if (success) {
