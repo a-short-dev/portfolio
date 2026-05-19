@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { headers } from "next/headers";
 import { Toaster } from "sonner";
 import FloatingChatButton from "@/components/floating-chat-button";
-
-// import SpotifyWidget from "@/components/spotify-widget";
+import SpotifyWidget from "@/components/spotify-widget";
 
 const geistSans = localFont({
 	src: "./fonts/GeistVF.woff",
@@ -118,8 +119,10 @@ export default async function RootLayout({
 			>
 				{children}
 				<FloatingChatButton />
-				{/* <SpotifyWidget /> */}
+				<SpotifyWidget />
 				<Toaster />
+				<Analytics />
+				<SpeedInsights />
 			</body>
 		</html>
 	);
