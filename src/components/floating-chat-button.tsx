@@ -1,34 +1,14 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Activity, Send, Terminal, X } from "lucide-react";
+import { Terminal, X } from "lucide-react";
 import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { FaWhatsapp } from "react-icons/fa";
+import ChatHeader from "./chat/chat-header";
+import ChatInput from "./chat/chat-input";
+import ChatMessageList from "./chat/chat-message-list";
+import type { Message } from "./chat/types";
 import WhatsAppLeadForm from "./whatsapp-lead-form";
-
-interface Message {
-	id: string;
-	content: string;
-	isUser: boolean;
-	timestamp: Date;
-	hasWhatsAppOption?: boolean;
-	stats?: {
-		model?: string;
-		inputTokens?: number;
-		outputTokens?: number;
-		totalTokens?: number;
-		responseTime?: number;
-		charactersGenerated?: number;
-		wordsGenerated?: number;
-		temperature?: number;
-		maxTokens?: number;
-		requestTime?: string;
-		completionTime?: string;
-		clientIP?: string;
-	};
-	isStreaming?: boolean;
-}
 
 export default function FloatingChatButton() {
 	const [isOpen, setIsOpen] = useState(false);
@@ -50,12 +30,42 @@ export default function FloatingChatButton() {
 	const inputRef = useRef<HTMLInputElement>(null);
 	const chatContainerRef = useRef<HTMLDivElement>(null);
 
+	// Load chat history safely on mount (hydration-safe)
+	useEffect(() => {
+		const saved = localStorage.getItem("weaver_chat_history");
+		if (saved) {
+			try {
+				const parsed = JSON.parse(saved).map((msg: any) => ({
+					...msg,
+					timestamp: new Date(msg.timestamp),
+				}));
+				if (parsed.length > 0) {
+					setMessages(parsed);
+				}
+			} catch (e) {
+				console.error("Failed to load chat history:", e);
+			}
+		}
+	}, []);
+
+	// Write updates to localStorage
+	useEffect(() => {
+		if (messages.length > 1 || (messages.length === 1 && messages[0].id !== "1")) {
+			const messagesToSave = messages.map((msg) => ({
+				...msg,
+				isStreaming: false, // Ensure we don't persist active stream indicators
+			}));
+			localStorage.setItem("weaver_chat_history", JSON.stringify(messagesToSave));
+		}
+	}, [messages]);
+
 	const scrollToBottom = useCallback((force = false) => {
 		const container = chatContainerRef.current;
 		if (!container) return;
 
 		// If the user has scrolled up to read, do not hijack their scroll unless forced
-		const isAtBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 120;
+		const isAtBottom =
+			container.scrollHeight - container.scrollTop - container.clientHeight < 200;
 
 		if (force || isAtBottom) {
 			requestAnimationFrame(() => {
@@ -66,12 +76,12 @@ export default function FloatingChatButton() {
 		}
 	}, []);
 
-	// Scroll on new messages with debouncing
+	// Scroll on new messages
 	useEffect(() => {
 		if (messages.length > 0) {
 			const lastMessage = messages[messages.length - 1];
-			// Force immediate scroll for user messages
-			scrollToBottom(lastMessage.isUser);
+			// Force immediate scroll for user messages or if the assistant is actively streaming tokens!
+			scrollToBottom(lastMessage.isUser || lastMessage.isStreaming === true);
 		}
 	}, [messages, scrollToBottom]);
 
@@ -265,13 +275,6 @@ export default function FloatingChatButton() {
 		setIsLeadFormOpen(true);
 	};
 
-	const suggestedQuestions = [
-		"Technical mastery?",
-		"Architectural history?",
-		"Deployment strategy?",
-		"System availability?",
-	];
-
 	const handleSuggestedQuestion = (question: string) => {
 		setInputMessage(question);
 		inputRef.current?.focus();
@@ -310,131 +313,26 @@ export default function FloatingChatButton() {
 						animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
 						exit={{ opacity: 0, scale: 0.95, y: 40, x: 20 }}
 						transition={{ type: "spring", stiffness: 300, damping: 30 }}
-						className="fixed bottom-24 right-6 w-[calc(100vw-3rem)] sm:w-80 max-w-md bg-black border border-[#E2B53E]/20 rounded-2xl shadow-[0_20px_50px_rgba(226,181,62,0.08)] z-50 overflow-hidden flex flex-col font-mono"
-						style={{
-							height: "min(450px, calc(100vh - 200px))", // Adjust height based on viewport
-							maxHeight: "calc(100dvh - 120px)", // Use dynamic viewport height for mobile
-						}}
+						className="fixed inset-0 sm:bottom-24 sm:right-6 sm:left-auto sm:top-auto w-full h-[100dvh] sm:h-[450px] md:h-[550px] sm:w-80 md:w-[480px] bg-black border-y sm:border border-[#E2B53E]/20 sm:rounded-2xl shadow-[0_20px_50px_rgba(226,181,62,0.08)] z-50 overflow-hidden flex flex-col font-mono"
 					>
-						{/* Chat Header */}
-						<div className="bg-black text-[#E2B53E] p-4 flex items-center justify-between border-b border-[#E2B53E]/20">
-							<div className="flex items-center gap-2">
-								<div className="w-2 h-2 bg-[#E2B53E] rounded-full animate-pulse" />
-								<span className="text-[10px] font-bold uppercase tracking-widest text-[#E2B53E]">
-									Weaver AI
-								</span>
-							</div>
-							<Activity size={12} className="text-[#E2B53E]/70 animate-pulse" />
-						</div>
+						<ChatHeader onClose={() => setIsOpen(false)} />
 
-						{/* Messages */}
-						<div
-							ref={chatContainerRef}
-							className="flex-1 overflow-y-auto p-4 space-y-4 bg-black text-xs scrollbar-thin scrollbar-thumb-white/20 overscroll-contain"
-							style={{
-								scrollBehavior: "smooth",
-								WebkitOverflowScrolling: "touch",
-							}}
-						>
-							{messages.map((message) => (
-								<div
-									key={message.id}
-									className={`flex flex-col ${message.isUser ? "items-end" : "items-start"}`}
-								>
-									<span className="text-[8px] text-[#E2B53E]/40 mb-1 uppercase tracking-wider font-bold">
-										{message.isUser ? "You" : "System"}
-									</span>
-									<div
-										className={`max-w-[85%] p-3 border ${
-											message.isUser
-												? "bg-[#E2B53E] text-black border-[#E2B53E] font-medium"
-												: "bg-white/[0.03] text-zinc-100 border-white/[0.08]"
-										}`}
-									>
-										<p className="leading-relaxed">
-											{message.content}
-											{message.isStreaming && (
-												<span className="inline-block w-1.5 h-3 bg-[#E2B53E] ml-1 animate-pulse" />
-											)}
-										</p>
-									</div>
+						<ChatMessageList
+							messages={messages}
+							isLoading={isLoading}
+							onWhatsAppTransfer={handleWhatsAppTransfer}
+							onSuggestedQuestion={handleSuggestedQuestion}
+							chatContainerRef={chatContainerRef}
+							messagesEndRef={messagesEndRef}
+						/>
 
-									{/* WhatsApp Direct Option */}
-									{!message.isUser &&
-										message.hasWhatsAppOption &&
-										!message.isStreaming && (
-											<div className="mt-2">
-												<button
-													type="button"
-													onClick={handleWhatsAppTransfer}
-													className="flex items-center gap-2 px-3 py-1.5 bg-[#E2B53E]/10 hover:bg-[#E2B53E] text-[#E2B53E] hover:text-black text-[8px] uppercase font-bold tracking-widest border border-[#E2B53E]/20 transition-all duration-300 rounded"
-												>
-													<FaWhatsapp size={10} />
-													<span>Secure_Link</span>
-												</button>
-											</div>
-										)}
-								</div>
-							))}
-
-							{/* Fluid bouncing dots loading animation */}
-							{isLoading && messages[messages.length - 1]?.content === "" && (
-								<div className="flex flex-col items-start animate-fade-in">
-									<span className="text-[8px] text-[#E2B53E]/40 mb-1 uppercase tracking-wider font-bold">
-										System
-									</span>
-									<div className="flex items-center gap-1.5 px-4 py-3 bg-white/[0.03] border border-white/[0.08] rounded max-w-[60px]">
-										<span className="w-1.5 h-1.5 bg-[#E2B53E] rounded-full animate-bounce [animation-delay:-0.3s]" />
-										<span className="w-1.5 h-1.5 bg-[#E2B53E] rounded-full animate-bounce [animation-delay:-0.15s]" />
-										<span className="w-1.5 h-1.5 bg-[#E2B53E] rounded-full animate-bounce" />
-									</div>
-								</div>
-							)}
-
-							{messages.length === 1 && !isLoading && (
-								<div className="flex flex-col gap-2 mt-2 border border-[#E2B53E]/10 bg-[#E2B53E]/[0.02] p-3 rounded">
-									<span className="text-[8px] uppercase tracking-widest text-[#E2B53E]/50 font-bold block mb-1">
-										Suggested Inquiries:
-									</span>
-									<div className="grid grid-cols-2 gap-2">
-										{suggestedQuestions.map((q) => (
-											<button
-												key={q}
-												type="button"
-												onClick={() => handleSuggestedQuestion(q)}
-												className="text-left text-[9px] uppercase tracking-wider p-2 border border-[#E2B53E]/15 hover:border-[#E2B53E]/50 hover:bg-[#E2B53E]/5 text-[#E2B53E]/70 hover:text-[#E2B53E] transition-all duration-300 rounded"
-											>
-												{q}
-											</button>
-										))}
-									</div>
-								</div>
-							)}
-							<div ref={messagesEndRef} />
-						</div>
-
-						{/* Input Interface */}
-						<div className="p-3 border-t border-[#E2B53E]/15 bg-black">
-							<form onSubmit={handleSubmit} className="flex gap-2 items-center">
-								<span className="text-[#E2B53E] text-xs font-bold select-none">$</span>
-								<input
-									ref={inputRef}
-									type="text"
-									value={inputMessage}
-									onChange={(e) => setInputMessage(e.target.value)}
-									placeholder="CMD..."
-									className="flex-1 bg-transparent border-none text-zinc-100 text-xs placeholder:text-zinc-600 focus:outline-none"
-									disabled={isLoading}
-								/>
-								<button
-									type="submit"
-									disabled={!inputMessage.trim() || isLoading}
-									className="text-[#E2B53E] hover:text-[#E2B53E]/80 disabled:opacity-30 p-1 rounded transition-colors"
-								>
-									<Send size={14} />
-								</button>
-							</form>
-						</div>
+						<ChatInput
+							inputMessage={inputMessage}
+							setInputMessage={setInputMessage}
+							isLoading={isLoading}
+							onSubmit={handleSubmit}
+							inputRef={inputRef}
+						/>
 					</motion.div>
 				)}
 			</AnimatePresence>
