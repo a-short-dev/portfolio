@@ -32,17 +32,106 @@ export async function POST(request: NextRequest) {
     }
 
     const { message, history } = await request.json();
+    const ownerSecret = process.env.OWNER_SECRET_KEY || "leke_admin_session_key_2026";
+    const lowerMessage = (message || "").toLowerCase().trim();
 
-    // 2. Input Guardrails Check
-    const guardrail = runInputGuardrails(message || "");
-    if (!guardrail.isSafe) {
-      console.warn(
-        `[Guardrails Triggered] IP: ${clientIP}, Reason: ${guardrail.reason}`,
-      );
-      return NextResponse.json(
-        { error: guardrail.fallbackResponse },
-        { status: 400 },
-      );
+    // Check if request is sent by the verified owner
+    const ownerCookie = request.cookies.get("owner_session")?.value;
+    const isOwner = ownerCookie === ownerSecret;
+
+    // Sudo Administrative Command Interceptor (Bypasses LLM/Guardrails completely for security)
+    const isAuthCommand = lowerMessage.startsWith("/sudo auth ") || lowerMessage.startsWith("/auth ");
+    const isLogoutCommand = lowerMessage === "/sudo logout" || lowerMessage === "/logout";
+
+    if (isAuthCommand || isLogoutCommand) {
+      const encoder = new TextEncoder();
+      const responseStream = new ReadableStream({
+        async start(controller) {
+          if (isAuthCommand) {
+            const parts = message.trim().split(/\s+/);
+            const providedKey = parts[2] || parts[1]; // Handle '/sudo auth key' or '/auth key'
+            const authSuccess = providedKey === ownerSecret;
+
+            if (authSuccess) {
+              controller.enqueue(
+                encoder.encode(
+                  `data: ${JSON.stringify({
+                    type: "content",
+                    data: {
+                      content: "🔓 **[System Security] Owner authentication successful.** System administrative clearance granted. Admin cookie initialized.",
+                    },
+                  })}\n\n`
+                )
+              );
+            } else {
+              controller.enqueue(
+                encoder.encode(
+                  `data: ${JSON.stringify({
+                    type: "content",
+                    data: {
+                      content: "🔒 **[System Security] Access denied.** Invalid administrative key protocol.",
+                    },
+                  })}\n\n`
+                )
+              );
+            }
+          } else {
+            // Logout command
+            controller.enqueue(
+              encoder.encode(
+                `data: ${JSON.stringify({
+                  type: "content",
+                  data: {
+                    content: "🔒 **[System Security] Administrative session terminated.** Admin credentials cleared successfully.",
+                  },
+                })}\n\n`
+              )
+            );
+          }
+          controller.close();
+        },
+      });
+
+      const response = new NextResponse(responseStream, {
+        headers: {
+          "Content-Type": "text/event-stream",
+          "Cache-Control": "no-cache",
+          "Connection": "keep-alive",
+        },
+      });
+
+      if (isAuthCommand) {
+        const parts = message.trim().split(/\s+/);
+        const providedKey = parts[2] || parts[1];
+        if (providedKey === ownerSecret) {
+          response.cookies.set("owner_session", ownerSecret, {
+            maxAge: 60 * 60 * 24 * 30, // 30 days
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+            path: "/",
+          });
+        } else {
+          response.cookies.delete("owner_session");
+        }
+      } else {
+        response.cookies.delete("owner_session");
+      }
+      return response;
+    }
+
+    // 2. Input Guardrails Check (Bypassed entirely for the verified owner!)
+    if (!isOwner) {
+      const guardrail = runInputGuardrails(message || "");
+      if (!guardrail.isSafe) {
+        console.warn(
+          `[Guardrails Triggered] IP: ${clientIP}, Reason: ${guardrail.reason}`,
+        );
+        return NextResponse.json(
+          { error: guardrail.fallbackResponse },
+          { status: 400 },
+        );
+      }
     }
 
     if (!OPENROUTER_API_KEY) {
@@ -52,17 +141,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 3. Adaptive Memory Integration (Learning from visitor's query)
-    await learnFromQuestion(message);
+    // 3. Adaptive Memory Integration (Only learn from standard visitors, not the owner!)
+    if (!isOwner) {
+      await learnFromQuestion(message);
+    }
     const memory = await getAgentMemory();
 
     // 4. Model Routing & Cookie-based Visitor Identification
     const routing = routeToModel(message);
     const returningCookie = request.cookies.get("returning_visitor");
     const isReturning = !!returningCookie;
-    const isOwner =
-      message.toLowerCase().includes("oluwaleke") ||
-      message.toLowerCase().includes("a_short_dev");
 
     const visitorType = isOwner ? "owner" : isReturning ? "returning" : "new";
 
@@ -121,11 +209,20 @@ export async function POST(request: NextRequest) {
               if (!success) {
                 success = true;
                 selectedModel = modelCandidate;
+
+                // Mask internal model endpoints for standard visitors to protect proprietary IP
+                const getMaskedModel = (rawModel: string): string => {
+                  if (isOwner) return rawModel;
+                  if (rawModel.includes("gemma")) return "Weaver Marketing v3 (Custom)";
+                  if (rawModel.includes("qwen")) return "Weaver Systems Coder v3 (Custom)";
+                  return "Weaver Reasoning Engine v3 (Custom)";
+                };
+
                 // Enqueue initial stats with agent metadata
                 const initialStats = {
                   type: "stats",
                   data: {
-                    model: selectedModel,
+                    model: getMaskedModel(selectedModel),
                     inputTokens: Math.ceil(
                       (typeof modelInput === "string"
                         ? modelInput.length

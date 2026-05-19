@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { headers } from "next/headers";
 import { Toaster } from "sonner";
 import FloatingChatButton from "@/components/floating-chat-button";
 import SpotifyWidget from "@/components/spotify-widget";
@@ -101,11 +102,14 @@ export const metadata: Metadata = {
 	category: "technology",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	const headersList = await headers();
+	const nonce = headersList.get("x-nonce") || undefined;
+
 	return (
 		<html lang="en" className="scroll-smooth" suppressHydrationWarning={true}>
 			<body

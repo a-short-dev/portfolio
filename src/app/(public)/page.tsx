@@ -1,5 +1,6 @@
 // Server Component — no "use client" directive
 
+import { headers } from "next/headers";
 import { Projects } from "@/data/projects";
 import HomeClient from "./home-client";
 
@@ -91,7 +92,10 @@ function toJsonLd(schema: unknown): string {
 
 // ── Page (Server Component) ───────────────────────────────────────────────────
 
-export default function HomePage() {
+export default async function HomePage() {
+	const headersList = await headers();
+	const nonce = headersList.get("x-nonce") || undefined;
+
 	// Build SoftwareApplication schemas from the static Projects list
 	const projectSchemas = Projects.map((project) => ({
 		"@context": "https://schema.org",
@@ -113,20 +117,24 @@ export default function HomePage() {
 			{/* ── Structured Data (server-rendered, immediately crawlable) ──────── */}
 			<script
 				type="application/ld+json"
+				nonce={nonce}
 				dangerouslySetInnerHTML={{ __html: toJsonLd(personSchema) }}
 			/>
 			<script
 				type="application/ld+json"
+				nonce={nonce}
 				dangerouslySetInnerHTML={{ __html: toJsonLd(websiteSchema) }}
 			/>
 			<script
 				type="application/ld+json"
+				nonce={nonce}
 				dangerouslySetInnerHTML={{ __html: toJsonLd(profilePageSchema) }}
 			/>
 			{projectSchemas.map((schema) => (
 				<script
 					key={`project-ld-${schema.name}`}
 					type="application/ld+json"
+					nonce={nonce}
 					dangerouslySetInnerHTML={{ __html: toJsonLd(schema) }}
 				/>
 			))}
