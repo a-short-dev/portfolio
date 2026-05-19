@@ -54,7 +54,9 @@ export const metadata: Metadata = {
 		"Prisma",
 		"NestJS",
 	],
-	authors: [{ name: "Oluwaleke Abiodun", url: "https://oluwaleke-dev.vercel.app" }],
+	authors: [
+		{ name: "Oluwaleke Abiodun", url: "https://oluwaleke-dev.vercel.app" },
+	],
 	creator: "Oluwaleke Abiodun",
 	publisher: "Oluwaleke Abiodun",
 	robots: {
@@ -99,19 +101,16 @@ export const metadata: Metadata = {
 	category: "technology",
 };
 
-
-
 export default function RootLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en" className="scroll-smooth">
+		<html lang="en" className="scroll-smooth" suppressHydrationWarning={true}>
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} ${marlish.variable} ${open_sans.variable} w-full dark:bg-slate-950 bg-background text-foreground antialiased min-h-screen font-sans`}
 			>
-
 				{children}
 				<FloatingChatButton />
 				<SpotifyWidget />

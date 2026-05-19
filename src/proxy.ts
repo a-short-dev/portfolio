@@ -1,6 +1,4 @@
-// proxy.ts
-
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 // Allowlist of trusted origins for API requests requiring credentials
 const ALLOWED_ORIGINS = [
@@ -8,9 +6,22 @@ const ALLOWED_ORIGINS = [
   "https://www.oluwaleke.dev",
   "https://oluwaleke-dev.vercel.app",
 ];
+const publicRoutes=[
+  "/",
+  "/about",
+  "/projects",
+  "/contact",
+  "/blog",
+  "/blog/:slug",
+]
+const authRoutes = [
+  "/login",
+  "/register",
+  "/forgot-password",
+  "/reset-password",
+]
 
 export function proxy(req: NextRequest) {
-  // ── CVE-2025-29927 Mitigation (Middleware Spoofing Bypass Protection) ──
   const forbiddenHeaders = [
     "x-middleware-subrequest",
     "x-middleware-invoke",
@@ -21,7 +32,7 @@ export function proxy(req: NextRequest) {
     if (req.headers.has(header)) {
       return new NextResponse(
         `Bad Request: Forbidden internal header '${header}' spoofing detected.`,
-        { status: 400 }
+        { status: 400 },
       );
     }
   }
@@ -46,11 +57,11 @@ export function proxy(req: NextRequest) {
         response.headers.set("Access-Control-Allow-Credentials", "true");
         response.headers.set(
           "Access-Control-Allow-Headers",
-          "Content-Type, Authorization, X-Requested-With, X-Nonce"
+          "Content-Type, Authorization, X-Requested-With, X-Nonce",
         );
         response.headers.set(
           "Access-Control-Allow-Methods",
-          "GET, POST, PUT, DELETE, OPTIONS"
+          "GET, POST, PUT, DELETE, OPTIONS",
         );
         response.headers.set("Access-Control-Max-Age", "86400"); // 24 hours cache
       }
@@ -64,11 +75,11 @@ export function proxy(req: NextRequest) {
       response.headers.set("Access-Control-Allow-Credentials", "true");
       response.headers.set(
         "Access-Control-Allow-Headers",
-        "Content-Type, Authorization, X-Requested-With, X-Nonce"
+        "Content-Type, Authorization, X-Requested-With, X-Nonce",
       );
       response.headers.set(
         "Access-Control-Allow-Methods",
-        "GET, POST, PUT, DELETE, OPTIONS"
+        "GET, POST, PUT, DELETE, OPTIONS",
       );
     }
     return response;
@@ -111,7 +122,7 @@ export function proxy(req: NextRequest) {
   response.headers.set("X-DNS-Prefetch-Control", "on");
   response.headers.set(
     "Permissions-Policy",
-    "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+    "camera=(), microphone=(), geolocation=(), interest-cohort=()",
   );
 
   return response;

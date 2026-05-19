@@ -33,18 +33,19 @@ async function getAccessToken() {
 		});
 
 		if (!response.ok) {
-			console.error(
-				"Failed to refresh Spotify token:",
-				response.status,
-				await response.text(),
+			const text = await response.text();
+			const isHtml = text.trim().startsWith("<");
+			console.warn(
+				`[Spotify] Failed to refresh token (Status: ${response.status}):`,
+				isHtml ? "Upstream API server error (HTML)" : text.slice(0, 150),
 			);
 			return null;
 		}
 
 		const data = await response.json();
 		return data.access_token;
-	} catch (error) {
-		console.error("Error refreshing Spotify token:", error);
+	} catch {
+		console.warn("[Spotify] Error refreshing token (network connection failure)");
 		return null;
 	}
 }
@@ -52,19 +53,13 @@ async function getAccessToken() {
 export async function GET() {
 	try {
 		if (!SPOTIFY_REFRESH_TOKEN) {
-			return NextResponse.json(
-				{ error: "Spotify not configured" },
-				{ status: 500 },
-			);
+			return NextResponse.json({ isPlaying: false });
 		}
 
 		const accessToken = await getAccessToken();
 
 		if (!accessToken) {
-			return NextResponse.json(
-				{ error: "Failed to get access token" },
-				{ status: 500 },
-			);
+			return NextResponse.json({ isPlaying: false });
 		}
 
 		const response = await fetch(NOW_PLAYING_ENDPOINT, {

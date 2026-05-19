@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Activity, Cpu, Github, Send, Terminal } from "lucide-react";
+import { Activity, Cpu, Send, Terminal } from "lucide-react";
 import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 

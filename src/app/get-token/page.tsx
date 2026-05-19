@@ -83,6 +83,7 @@ export default function GetTokenPage() {
 							className="w-full bg-black border border-white/20 p-4 text-white focus:border-accent outline-none"
 						/>
 						<button
+							type="button"
 							onClick={handleExchange}
 							disabled={loading}
 							className="bg-white text-black px-6 py-2 font-bold w-full hover:bg-gray-200 disabled:opacity-50"

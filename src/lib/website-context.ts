@@ -17,19 +17,19 @@ export const WEBSITE_CONTEXT = `
 
 ## CORE EXPERTISE
 ### Programming Languages
-- **Kotlin** - Native Android development
-- **Swift** - Native iOS development  
+- **Kotlin** - Native Android development (Jetpack Compose, Native SDKs, high-performance native core systems)
+- **Swift** - Native iOS, macOS, watchOS development (SwiftUI, Apple Developer toolchain)  
 - **Rust** - Systems programming, performance-critical applications
 - **TypeScript** - Full-stack web development
 - **Python** - Backend systems, data processing
-- **PHP/Laravel** - Legacy systems, enterprise applications
+- **PHP/Laravel** - Custom plugins, CMS architecture, full-stack systems. Former Full Stack PHP Developer (6 months) and current active contract agency partner for Businessfront (parent company of techpoint.africa), building custom PHP plugins.
 
 ### Technical Stack
 - **Frontend:** Next.js 15, React 19, TypeScript, Framer Motion, GSAP, Tailwind CSS
 - **Backend:** Node.js, NestJS, Python, REST/GraphQL APIs, Microservices
-- **Mobile:** React Native (cross-platform apps)
+- **Mobile:** Native Apple & Android (SwiftUI, Jetpack Compose), React Native (Expo, React Native macOS). *Not limited to cross-platform tools; capable of building true platform-native apps.*
 - **Databases:** PostgreSQL, MongoDB, Redis, Supabase
-- **Cloud & DevOps:** Multi-cloud deployment, Docker, Vercel Edge, AWS
+- **Cloud & DevOps:** VPC Networking, Docker containerization, AWS, Azure, GitHub Actions (CI/CD), Bare Metal VPS setups, Nginx reverse proxy/load balancing, Vercel Edge
 - **AI/ML:** LLM integration, OpenRouter, RAG systems
 
 ## DEPLOYED PROJECTS
@@ -106,6 +106,12 @@ export const WEBSITE_CONTEXT = `
    - Tech: Next.js, Tailwind, TypeScript
    - Status: Completed
 
+10. **Businessfront & Techpoint Africa** (https://bussinessfront.com)
+    - Parent company of techpoint.africa. Built high-scale custom PHP plugins and integrated core technical features.
+    - Role: Worked 6 months as Full Stack PHP Developer; now serving as active contract agency partner.
+    - Tech: PHP, Custom Plugins, WordPress, Systems Integration, CMS Architecture
+    - Status: Active Contract Partner
+
 ## BEYOND THE CODE
 
 ### The Weaver (Poetry)
@@ -153,10 +159,10 @@ export const WEBSITE_CONTEXT = `
 - Real-time tracking and monitoring (NCC Tracking System)
 - High-availability, data integrity, audit trails
 
-### Content & Media Platforms
-- Dynamic content showcase systems (Magic MediaTV)
-- Video/media management and streaming
-- Responsive, performance-optimized designs
+### WordPress & PHP Custom Development
+- Custom plugin design and implementation for large-scale media parent companies (Businessfront / Techpoint Africa)
+- High-availability, clean, and highly secure PHP architectures
+- Full-stack system migrations, headless CMS architectures, and custom integrations
 
 ## DEVELOPMENT PHILOSOPHY
 - **Performance-First:** Optimized for speed, low memory usage, and efficiency
@@ -164,6 +170,19 @@ export const WEBSITE_CONTEXT = `
 - **Scalable Architecture:** Designed to grow with business needs
 - **User-Centric:** Focus on intuitive UX and seamless experiences
 - **Quality Code:** Clean, maintainable, well-documented codebases
+
+## PRICING MODEL & CLIENT RATES
+Leke operates on a highly optimized, competitive global-local rate structure designed to deliver elite-level engineering with high ROI:
+- **Billing Base Exchange**: ₦1,500 NGN = $1.00 USD (All estimations are anchored in USD to protect against currency inflation, but fully payable in both NGN and USD).
+- **Hourly Contract / Consultation Rate**: $30.00 USD / hour (~₦45,000 NGN / hour).
+- **Dedicated Retainer (Monthly)**:
+  * Full-Time Retainer (40 hrs/wk): $2,000.00 USD / month (~₦3,000,000 NGN / month).
+  * Part-Time Retainer (20 hrs/wk): $1,100.00 USD / month (~₦1,650,000 NGN / month).
+- **Fixed-Scope Projects (Estimated Ranges)**:
+  * Custom PHP/WordPress Plugins & Utilities: $800 - $1,500 USD (~₦1,200,000 - ₦2,250,000 NGN) | Delivery: 1 - 2 weeks.
+  * Core Web/Mobile SaaS Applications: $2,000 - $4,000 USD (~₦3,000,000 - ₦6,000,000 NGN) | Delivery: 3 - 5 weeks.
+  * Complex Custom Enterprise Architectures: $4,500 - $8,000+ USD (~₦6,750,000 - ₦12,000,000+ NGN) | Delivery: 6 - 8+ weeks.
+- **Value Justification**: Rates include full infrastructure uptime assurance (backup power generator fuel, redundant mobile backup networks), elite memory-optimized performance engineering (minimizing database and cloud hosting fees), and robust native security protection.
 `;
 
 export default WEBSITE_CONTEXT;

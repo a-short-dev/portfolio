@@ -32,6 +32,7 @@ export default function Navbar() {
 		{ name: "Skills", href: "#skills-and-tools" },
 		{ name: "Poems", href: "https://devweaver.substack.com", external: true },
 		{ name: "Cooking", href: "#about" },
+		{ name: "Login", href: "/login" },
 		{ name: "Contact", href: "#contact", cta: true },
 	];
 

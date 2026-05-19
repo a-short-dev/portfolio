@@ -64,7 +64,7 @@ export const Projects: ProductCardProps[] = [
     img: "/projects/flexiti.png",
     type: "contract",
     techStack: ["Next.js", "Prisma", "PostgreSQL", "Tailwind"],
-    status: "ongoing",
+    status: "completed",
     className: "md:col-span-1 md:row-span-1",
   },
   {

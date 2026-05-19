@@ -1,7 +1,7 @@
 // Server Component — no "use client" directive
 
 import { Projects } from "@/data/projects";
-import HomeClient from "../home-client";
+import HomeClient from "./home-client";
 
 // ── JSON-LD schemas ───────────────────────────────────────────────────────────
 
@@ -107,6 +107,7 @@ export default function HomePage() {
 		keywords: (project.techStack ?? []).join(", "),
 	}));
 
+	// biome-ignore-start lint/security/noDangerouslySetInnerHtml: JSON-LD is safely sanitized via toJsonLd
 	return (
 		<>
 			{/* ── Structured Data (server-rendered, immediately crawlable) ──────── */}
@@ -122,9 +123,9 @@ export default function HomePage() {
 				type="application/ld+json"
 				dangerouslySetInnerHTML={{ __html: toJsonLd(profilePageSchema) }}
 			/>
-			{projectSchemas.map((schema, i) => (
+			{projectSchemas.map((schema) => (
 				<script
-					key={`project-ld-${i}`}
+					key={`project-ld-${schema.name}`}
 					type="application/ld+json"
 					dangerouslySetInnerHTML={{ __html: toJsonLd(schema) }}
 				/>
@@ -134,4 +135,5 @@ export default function HomePage() {
 			<HomeClient />
 		</>
 	);
+	// biome-ignore-end lint/security/noDangerouslySetInnerHtml: JSON-LD is safely sanitized via toJsonLd
 }
