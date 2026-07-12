@@ -3,13 +3,13 @@
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import React, { useEffect, useRef } from "react";
-import AboutMeSection from "@/components/about-me-section";
+import AboutMeSection from "@/components/sections/about-me-section";
 import AnimatedGridBackground from "@/components/animated-grid-background";
-import Footer from "@/components/footer";
-import HeroSection from "@/components/hero-section";
-import HireMeForm from "@/components/hire-me-form";
-import ProjectsSection from "@/components/projects-section";
-import SkillsSection from "@/components/skills-section";
+import Footer from "@/components/layout/footer";
+import HeroSection from "@/components/sections/hero-section";
+import HireMeForm from "@/components/widgets/hire-me-form";
+import ProjectsSection from "@/components/sections/projects-section";
+import SkillsSection from "@/components/sections/skills-section";
 
 export default function HomeClient() {
 	const containerRef = useRef<HTMLDivElement>(null);

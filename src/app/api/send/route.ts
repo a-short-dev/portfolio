@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
-import { EmailTemplate } from "@/components/email-template";
+import { EmailTemplate } from "@/components/widgets/email-template";
 import { contactFormSchema } from "@/lib/validation";
 import { getClientIP, isRateLimited } from "@/lib/agent/rate-limiter";
 import { OWNER_INFO } from "@/lib/constants";

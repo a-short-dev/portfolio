@@ -4,10 +4,10 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Terminal, X } from "lucide-react";
 import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import ChatHeader from "./chat/chat-header";
-import ChatInput from "./chat/chat-input";
-import ChatMessageList from "./chat/chat-message-list";
-import type { Message } from "./chat/types";
+import ChatHeader from "@/components/chat/chat-header";
+import ChatInput from "@/components/chat/chat-input";
+import ChatMessageList from "@/components/chat/chat-message-list";
+import type { Message } from "@/components/chat/types";
 import WhatsAppLeadForm from "./whatsapp-lead-form";
 
 export default function FloatingChatButton() {

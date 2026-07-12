@@ -7,8 +7,8 @@ import { Toaster } from "sonner";
 import { headers } from "next/headers";
 import dynamic from "next/dynamic";
 import { DOMAINS, OWNER_INFO } from "@/lib/constants";
-import FloatingChatButton from "@/components/floating-chat-button";
-import SpotifyWidget from "@/components/spotify-widget";
+import FloatingChatButton from "@/components/widgets/floating-chat-button";
+import SpotifyWidget from "@/components/widgets/spotify-widget";
 
 const geistSans = localFont({
 	src: "./fonts/GeistVF.woff",

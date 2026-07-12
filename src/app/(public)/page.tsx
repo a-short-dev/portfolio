@@ -2,7 +2,7 @@
 
 import { headers } from "next/headers";
 import { Projects } from "@/data/projects";
-import HomeClient from "./home-client";
+import HomeClient from "@/components/layout/home-client";
 import { DOMAINS, OWNER_INFO, SOCIAL_LINKS } from "@/lib/constants";
 
 // ── JSON-LD schemas ───────────────────────────────────────────────────────────
