@@ -3,24 +3,25 @@
 import { headers } from "next/headers";
 import { Projects } from "@/data/projects";
 import HomeClient from "./home-client";
+import { DOMAINS, OWNER_INFO, SOCIAL_LINKS } from "@/lib/constants";
 
 // ── JSON-LD schemas ───────────────────────────────────────────────────────────
 
 const personSchema = {
 	"@context": "https://schema.org",
 	"@type": "Person",
-	name: "Oluwaleke Abiodun",
-	alternateName: "Leke",
-	jobTitle: "Full Stack Software Engineer",
+	name: OWNER_INFO.name,
+	alternateName: OWNER_INFO.shortName,
+	jobTitle: OWNER_INFO.title,
 	description:
-		"Polyglot software engineer specializing in React, Next.js, React Native, Node.js, and Python. Building scalable web apps, mobile apps, and backend systems.",
-	url: "https://oluwaleke.dev",
-	image: "https://oluwaleke.dev/og-image.png",
+		"Polyglot software engineer and founder building high-performance systems and bootstrapping products.",
+	url: DOMAINS.canonical,
+	image: `${DOMAINS.canonical}/og-image.png`,
 	sameAs: [
-		"https://twitter.com/a_short_dev",
-		"https://instagram.com/a-short-dev",
-		"https://github.com/a-short-dev",
-		"https://devweaver.substack.com",
+		SOCIAL_LINKS.twitter,
+		SOCIAL_LINKS.github,
+		SOCIAL_LINKS.substack,
+		SOCIAL_LINKS.linkedin,
 	],
 	knowsAbout: [
 		"React",
@@ -30,33 +31,34 @@ const personSchema = {
 		"Node.js",
 		"Python",
 		"PostgreSQL",
-		"Prisma",
-		"NestJS",
+		"Rust",
+		"Swift",
+		"Kotlin",
 		"Mobile App Development",
 		"Web Development",
 		"API Development",
 	],
 	worksFor: {
 		"@type": "Organization",
-		name: "Freelance",
+		name: OWNER_INFO.brand,
 	},
 };
 
 const websiteSchema = {
 	"@context": "https://schema.org",
 	"@type": "WebSite",
-	name: "Oluwaleke Abiodun Portfolio",
-	url: "https://oluwaleke.dev",
-	description: "Portfolio of Oluwaleke Abiodun — Full Stack Software Engineer",
+	name: `${OWNER_INFO.name} Portfolio`,
+	url: DOMAINS.canonical,
+	description: `Portfolio of ${OWNER_INFO.name} — ${OWNER_INFO.title}`,
 	author: {
 		"@type": "Person",
-		name: "Oluwaleke Abiodun",
+		name: OWNER_INFO.name,
 	},
 	potentialAction: {
 		"@type": "SearchAction",
 		target: {
 			"@type": "EntryPoint",
-			urlTemplate: "https://oluwaleke.dev/?q={search_term_string}",
+			urlTemplate: `${DOMAINS.canonical}/?q={search_term_string}`,
 		},
 		"query-input": "required name=search_term_string",
 	},
@@ -66,18 +68,18 @@ const profilePageSchema = {
 	"@context": "https://schema.org",
 	"@type": "ProfilePage",
 	dateCreated: "2024-01-01T00:00:00Z",
-	dateModified: new Date().toISOString(),
+	dateModified: "2026-07-12T00:00:00Z",
 	mainEntity: {
 		"@type": "Person",
-		name: "Oluwaleke Abiodun",
-		alternateName: "Leke",
-		identifier: "a-short-dev",
+		name: OWNER_INFO.name,
+		alternateName: OWNER_INFO.shortName,
+		identifier: OWNER_INFO.brand,
 		description:
-			"Polyglot software engineer specializing in React, Next.js, React Native, Node.js, and Python.",
-		image: "https://oluwaleke.dev/og-image.png",
+			"Polyglot software engineer specializing in Kotlin, Swift, Rust, and TypeScript.",
+		image: `${DOMAINS.canonical}/og-image.png`,
 		sameAs: [
-			"https://github.com/a-short-dev",
-			"https://twitter.com/a_short_dev",
+			SOCIAL_LINKS.github,
+			SOCIAL_LINKS.twitter,
 		],
 	},
 };

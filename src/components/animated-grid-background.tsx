@@ -35,24 +35,39 @@ const AnimatedGridBackground: React.FC<AnimatedGridBackgroundProps> = ({
 			speed: number;
 		}> = [];
 
-		const rows = 25;
-		const cols = 40;
+		const prefersReducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+		let resizeTimeout: NodeJS.Timeout;
 
 		const handleResize = () => {
-			width = window.innerWidth;
-			height = window.innerHeight;
-			canvas.width = width * window.devicePixelRatio;
-			canvas.height = height * window.devicePixelRatio;
-			ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-			initDots();
+			if (typeof window === "undefined") return;
+			clearTimeout(resizeTimeout);
+			resizeTimeout = setTimeout(() => {
+				width = window.innerWidth;
+				height = window.innerHeight;
+
+				// Viewport-aware grid density reduction
+				const isMobile = width < 640;
+				const currentRows = isMobile ? 12 : 25;
+				const currentCols = isMobile ? 20 : 40;
+
+				canvas.width = width * window.devicePixelRatio;
+				canvas.height = height * window.devicePixelRatio;
+				ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+				initDots(currentRows, currentCols);
+
+				if (prefersReducedMotion) {
+					drawFrame();
+				}
+			}, 150);
 		};
 
-		const initDots = () => {
+		const initDots = (targetRows: number, targetCols: number) => {
 			dots.length = 0;
-			for (let i = 0; i < rows; i++) {
-				for (let j = 0; j < cols; j++) {
-					const baseX = (j / (cols - 1)) * width;
-					const baseY = (i / (rows - 1)) * height;
+			for (let i = 0; i < targetRows; i++) {
+				for (let j = 0; j < targetCols; j++) {
+					const baseX = (j / (targetCols - 1)) * width;
+					const baseY = (i / (targetRows - 1)) * height;
 					dots.push({
 						x: baseX,
 						y: baseY,
@@ -68,40 +83,50 @@ const AnimatedGridBackground: React.FC<AnimatedGridBackgroundProps> = ({
 			}
 		};
 
-		const render = () => {
+		const drawFrame = () => {
 			ctx.clearRect(0, 0, width, height);
-
 			dots.forEach((dot) => {
-				dot.angle += dot.speed;
-				dot.x = dot.baseX + Math.cos(dot.angle) * 10;
-				dot.y = dot.baseY + Math.sin(dot.angle) * 8;
-
 				ctx.beginPath();
 				ctx.arc(dot.x, dot.y, dot.size, 0, Math.PI * 2);
 
 				if (dot.isHighlight) {
-					// GoT Gold Highlight
 					ctx.fillStyle = `rgba(184, 134, 11, ${dot.opacity + 0.3})`;
 					ctx.shadowBlur = 10;
 					ctx.shadowColor = "rgba(184, 134, 11, 0.4)";
 				} else {
-					// Steel/Slate base
 					ctx.fillStyle = `rgba(100, 116, 139, ${dot.opacity})`;
 					ctx.shadowBlur = 0;
+					ctx.shadowColor = "transparent";
 				}
 
 				ctx.fill();
 			});
+		};
 
-			animationFrameId = requestAnimationFrame(render);
+		const render = () => {
+			dots.forEach((dot) => {
+				dot.angle += dot.speed;
+				dot.x = dot.baseX + Math.cos(dot.angle) * 10;
+				dot.y = dot.baseY + Math.sin(dot.angle) * 8;
+			});
+
+			drawFrame();
+
+			if (!prefersReducedMotion) {
+				animationFrameId = requestAnimationFrame(render);
+			}
 		};
 
 		window.addEventListener("resize", handleResize);
 		handleResize();
-		render();
+
+		if (!prefersReducedMotion) {
+			render();
+		}
 
 		return () => {
 			window.removeEventListener("resize", handleResize);
+			clearTimeout(resizeTimeout);
 			cancelAnimationFrame(animationFrameId);
 		};
 	}, []);

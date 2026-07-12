@@ -1,25 +1,12 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { DOMAINS } from "@/lib/constants";
 
 // Allowlist of trusted origins for API requests requiring credentials
 const ALLOWED_ORIGINS = [
-  "https://oluwaleke.dev",
-  "https://www.oluwaleke.dev",
-  "https://oluwaleke-dev.vercel.app",
+  DOMAINS.canonical,
+  `https://www.${DOMAINS.canonical.replace("https://", "")}`,
+  DOMAINS.vercel,
 ];
-const publicRoutes=[
-  "/",
-  "/about",
-  "/projects",
-  "/contact",
-  "/blog",
-  "/blog/:slug",
-]
-const authRoutes = [
-  "/login",
-  "/register",
-  "/forgot-password",
-  "/reset-password",
-]
 
 export function proxy(req: NextRequest) {
   const forbiddenHeaders = [
@@ -94,9 +81,10 @@ export function proxy(req: NextRequest) {
     style-src 'self' 'unsafe-inline';
     img-src 'self' data: blob: https://i.scdn.co https://*.scdn.co;
     font-src 'self';
-    connect-src 'self';
+    connect-src 'self' https://*.vercel-insights.com https://vitals.vercel-analytics.com;
     object-src 'none';
     base-uri 'self';
+    form-action 'self';
     frame-ancestors 'none';
   `
     .replace(/\s{2,}/g, " ")
@@ -122,7 +110,11 @@ export function proxy(req: NextRequest) {
   response.headers.set("X-DNS-Prefetch-Control", "on");
   response.headers.set(
     "Permissions-Policy",
-    "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+    "camera=(), microphone=(), geolocation=()",
+  );
+  response.headers.set(
+    "Strict-Transport-Security",
+    "max-age=31536000; includeSubDomains; preload",
   );
 
   return response;

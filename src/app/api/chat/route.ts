@@ -5,6 +5,8 @@ import { getAgentMemory, learnFromQuestion } from "@/lib/agent/memory";
 import { constructSystemPrompt } from "@/lib/agent/prompt";
 import { getClientIP, isRateLimited } from "@/lib/agent/rate-limiter";
 import { MODEL_FALLBACKS, routeToModel } from "@/lib/agent/routing";
+import { chatInputSchema } from "@/lib/validation";
+import { DOMAINS } from "@/lib/constants";
 
 export const maxDuration = 60; // Extend Vercel runtime function timeout to maximum allowed 60 seconds
 
@@ -16,7 +18,7 @@ export async function POST(request: NextRequest) {
 
   try {
     // 1. Rate Limiting Check
-    if (isRateLimited(clientIP)) {
+    if (await isRateLimited(clientIP)) {
       return NextResponse.json(
         {
           error: "Too many requests. Please wait a moment before trying again.",
@@ -33,13 +35,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { message, history } = await request.json();
-    const ownerSecret = process.env.OWNER_SECRET_KEY || "leke_admin_session_key_2026";
-    const lowerMessage = (message || "").toLowerCase().trim();
+    const body = await request.json();
+    const parsed = chatInputSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: "Invalid request payload" }, { status: 400 });
+    }
+
+    const { message, history } = parsed.data;
+    const ownerSecret = process.env.OWNER_SECRET_KEY;
+    const lowerMessage = message.toLowerCase().trim();
 
     // Check if request is sent by the verified owner
     const ownerCookie = request.cookies.get("owner_session")?.value;
-    const isOwner = ownerCookie === ownerSecret;
+    const isOwner = !!(ownerSecret && ownerCookie === ownerSecret);
 
     // Sudo Administrative Command Interceptor (Bypasses LLM/Guardrails completely for security)
     const isAuthCommand = lowerMessage.startsWith("/sudo auth ") || lowerMessage.startsWith("/auth ");
@@ -52,7 +60,7 @@ export async function POST(request: NextRequest) {
           if (isAuthCommand) {
             const parts = message.trim().split(/\s+/);
             const providedKey = parts[2] || parts[1]; // Handle '/sudo auth key' or '/auth key'
-            const authSuccess = providedKey === ownerSecret;
+            const authSuccess = !!(ownerSecret && providedKey === ownerSecret);
 
             if (authSuccess) {
               controller.enqueue(
@@ -105,7 +113,7 @@ export async function POST(request: NextRequest) {
       if (isAuthCommand) {
         const parts = message.trim().split(/\s+/);
         const providedKey = parts[2] || parts[1];
-        if (providedKey === ownerSecret) {
+        if (ownerSecret && providedKey === ownerSecret) {
           response.cookies.set("owner_session", ownerSecret, {
             maxAge: 60 * 60 * 24 * 30, // 30 days
             httpOnly: true,
@@ -167,7 +175,7 @@ export async function POST(request: NextRequest) {
     const openRouter = new OpenRouter({
       apiKey: OPENROUTER_API_KEY,
       httpReferer:
-        process.env.NEXT_PUBLIC_SITE_URL || "https://oluwaleke-dev.vercel.app/",
+        process.env.NEXT_PUBLIC_SITE_URL || DOMAINS.canonical,
       appTitle: "Oluwaleke Portfolio AI Assistant",
     });
 
@@ -233,13 +241,13 @@ export async function POST(request: NextRequest) {
             );
             const modelInput =
               history && Array.isArray(history) && history.length > 0
-                ? [
+                ? ([
                     ...history.map((msg: any) => ({
                       role: msg.role === "user" ? "user" : "assistant",
                       content: msg.content,
                     })),
                     { role: "user", content: message },
-                  ]
+                  ] as any[])
                 : message;
 
             const res = openRouter.callModel({
@@ -369,9 +377,10 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     const responseTime = Date.now() - startTime;
+    const isProd = process.env.NODE_ENV === "production";
     console.error(
       `❌ Agent Chat Route Exception - IP: ${clientIP}, Response Time: ${responseTime}ms, Error:`,
-      error,
+      isProd ? (error as any)?.message || error : error,
     );
 
     return NextResponse.json(

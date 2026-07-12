@@ -3,19 +3,19 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { AlertCircle, Send, X } from "lucide-react";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { z } from "zod";
 import { FaWhatsapp } from "react-icons/fa";
+import { whatsappLeadSchema } from "@/lib/validation";
+import { OWNER_INFO } from "@/lib/constants";
 
 interface WhatsAppLeadFormProps {
 	isOpen: boolean;
 	onClose: () => void;
 }
 
-interface FormData {
-	name: string;
-	email: string;
-	projectType: string;
-	message: string;
-}
+type WhatsAppFormValues = z.infer<typeof whatsappLeadSchema>;
 
 const PROJECT_TYPES = [
 	"E-commerce Platform",
@@ -33,83 +33,44 @@ export default function WhatsAppLeadForm({
 	isOpen,
 	onClose,
 }: WhatsAppLeadFormProps) {
-	const [formData, setFormData] = useState<FormData>({
-		name: "",
-		email: "",
-		projectType: "",
-		message: "",
-	});
-	const [errors, setErrors] = useState<Partial<FormData>>({});
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
-	const validateEmail = (email: string): boolean => {
-		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-		return emailRegex.test(email);
-	};
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+		reset,
+	} = useForm<WhatsAppFormValues>({
+		resolver: zodResolver(whatsappLeadSchema),
+		defaultValues: {
+			name: "",
+			email: "",
+			projectType: "",
+			message: "",
+		},
+	});
 
-	const validateForm = (): boolean => {
-		const newErrors: Partial<FormData> = {};
-
-		if (!formData.name.trim()) {
-			newErrors.name = "Name is required";
-		}
-
-		if (!formData.email.trim()) {
-			newErrors.email = "Email is required";
-		} else if (!validateEmail(formData.email)) {
-			newErrors.email = "Invalid email format";
-		}
-
-		if (!formData.projectType) {
-			newErrors.projectType = "Please select a project type";
-		}
-
-		setErrors(newErrors);
-		return Object.keys(newErrors).length === 0;
-	};
-
-	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault();
-
-		if (!validateForm()) return;
-
+	const onSubmit = (data: WhatsAppFormValues) => {
 		setIsSubmitting(true);
 
 		// Format WhatsApp message with user information
-		const whatsappMessage = `Hi! I'm ${formData.name}
+		const whatsappMessage = `Hi! I'm ${data.name}
 
-📧 Email: ${formData.email}
-🎯 Project Type: ${formData.projectType}
-${formData.message ? `\n💬 Message: ${formData.message}` : ""}
+📧 Email: ${data.email}
+🎯 Project Type: ${data.projectType}
+${data.message ? `\n💬 Message: ${data.message}` : ""}
 
 I'd like to discuss this project with you.`;
 
-		const phoneNumber = "+2349165913234";
 		const encodedMessage = encodeURIComponent(whatsappMessage);
-		const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+		const whatsappUrl = `https://wa.me/${OWNER_INFO.phone}?text=${encodedMessage}`;
 
-		// Small delay for UX
 		setTimeout(() => {
 			window.open(whatsappUrl, "_blank");
 			setIsSubmitting(false);
-
-			// Reset form and close
-			setFormData({ name: "", email: "", projectType: "", message: "" });
+			reset();
 			onClose();
 		}, 500);
-	};
-
-	const handleChange = (
-		e: React.ChangeEvent<
-			HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-		>,
-	) => {
-		const { name, value } = e.target;
-		setFormData((prev) => ({ ...prev, [name]: value }));
-		// Clear error when user starts typing
-		if (errors[name as keyof FormData]) {
-			setErrors((prev) => ({ ...prev, [name]: undefined }));
-		}
 	};
 
 	return (
@@ -158,7 +119,7 @@ I'd like to discuss this project with you.`;
 						</div>
 
 						{/* Form */}
-						<form onSubmit={handleSubmit} className="p-6 space-y-4">
+						<form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
 							{/* Name Field */}
 							<div>
 								<label
@@ -170,18 +131,16 @@ I'd like to discuss this project with you.`;
 								<input
 									type="text"
 									id="name"
-									name="name"
-									value={formData.name}
-									onChange={handleChange}
+									{...register("name")}
 									className={`w-full bg-white/5 border ${
 										errors.name ? "border-red-500" : "border-white/20"
 									} text-white px-4 py-2.5 text-sm focus:outline-none focus:border-white/40 transition-colors`}
 									placeholder="John Doe"
 								/>
 								{errors.name && (
-									<div className="flex items-center gap-1 mt-1 text-red-400 text-xs">
+									<div className="flex items-center gap-1 mt-1 text-red-400 text-xs animate-fade-in">
 										<AlertCircle size={12} />
-										<span>{errors.name}</span>
+										<span>{errors.name.message}</span>
 									</div>
 								)}
 							</div>
@@ -197,18 +156,16 @@ I'd like to discuss this project with you.`;
 								<input
 									type="email"
 									id="email"
-									name="email"
-									value={formData.email}
-									onChange={handleChange}
+									{...register("email")}
 									className={`w-full bg-white/5 border ${
 										errors.email ? "border-red-500" : "border-white/20"
 									} text-white px-4 py-2.5 text-sm focus:outline-none focus:border-white/40 transition-colors`}
 									placeholder="john@example.com"
 								/>
 								{errors.email && (
-									<div className="flex items-center gap-1 mt-1 text-red-400 text-xs">
+									<div className="flex items-center gap-1 mt-1 text-red-400 text-xs animate-fade-in">
 										<AlertCircle size={12} />
-										<span>{errors.email}</span>
+										<span>{errors.email.message}</span>
 									</div>
 								)}
 							</div>
@@ -223,9 +180,7 @@ I'd like to discuss this project with you.`;
 								</label>
 								<select
 									id="projectType"
-									name="projectType"
-									value={formData.projectType}
-									onChange={handleChange}
+									{...register("projectType")}
 									className={`w-full bg-white/5 border ${
 										errors.projectType ? "border-red-500" : "border-white/20"
 									} text-white px-4 py-2.5 text-sm focus:outline-none focus:border-white/40 transition-colors`}
@@ -240,9 +195,9 @@ I'd like to discuss this project with you.`;
 									))}
 								</select>
 								{errors.projectType && (
-									<div className="flex items-center gap-1 mt-1 text-red-400 text-xs">
+									<div className="flex items-center gap-1 mt-1 text-red-400 text-xs animate-fade-in">
 										<AlertCircle size={12} />
-										<span>{errors.projectType}</span>
+										<span>{errors.projectType.message}</span>
 									</div>
 								)}
 							</div>
@@ -257,20 +212,26 @@ I'd like to discuss this project with you.`;
 								</label>
 								<textarea
 									id="message"
-									name="message"
-									value={formData.message}
-									onChange={handleChange}
+									{...register("message")}
 									rows={3}
-									className="w-full bg-white/5 border border-white/20 text-white px-4 py-2.5 text-sm focus:outline-none focus:border-white/40 transition-colors resize-none"
+									className={`w-full bg-white/5 border ${
+										errors.message ? "border-red-500" : "border-white/20"
+									} text-white px-4 py-2.5 text-sm focus:outline-none focus:border-white/40 transition-colors resize-none`}
 									placeholder="Tell me about your project..."
 								/>
+								{errors.message && (
+									<div className="flex items-center gap-1 mt-1 text-red-400 text-xs animate-fade-in">
+										<AlertCircle size={12} />
+										<span>{errors.message.message}</span>
+									</div>
+								)}
 							</div>
 
 							{/* Submit Button */}
 							<button
 								type="submit"
 								disabled={isSubmitting}
-								className="w-full flex items-center justify-center gap-3 px-6 py-3 bg-white text-black font-bold tracking-wider text-xs uppercase hover:bg-white/90 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+								className="w-full flex items-center justify-center gap-3 px-6 py-3 bg-white text-black font-bold tracking-wider text-xs uppercase hover:bg-white/90 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
 							>
 								{isSubmitting ? (
 									<>
@@ -290,6 +251,7 @@ I'd like to discuss this project with you.`;
 								Your info will be sent via WhatsApp
 							</p>
 						</form>
+						
 					</motion.div>
 				</>
 			)}

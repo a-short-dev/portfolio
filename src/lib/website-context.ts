@@ -11,8 +11,9 @@ export const WEBSITE_CONTEXT = `
 ## PROFESSIONAL IDENTITY
 - Name: Oluwaleke Abiodun
 - Brand: a_short_dev
-- Title: Polyglot Engineer
-- Focus: High-performance native and web ecosystems with emphasis on memory efficiency, security, and scalability
+- Title: Polyglot Engineer & Founder
+- Current Focus: Bootstrapping a complex, high-performance software product with personal capital. Actively seeking a co-founder with a strong network to lead marketing, describe the product to a wider audience, and build social proof. Focused on lean, independent execution without Venture Capital (VC) to keep the product direction pure and development aligned.
+- Specialty: High-performance native and web ecosystems with emphasis on memory efficiency, security, and scalability
 - Tagline: "Performance • Low Memory • Security"
 
 ## CORE EXPERTISE

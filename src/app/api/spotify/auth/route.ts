@@ -79,8 +79,11 @@ export async function GET(request: NextRequest) {
 		});
 
 		return response;
-	} catch (error) {
-		console.error("Spotify auth error:", error);
+	} catch (error: any) {
+		console.error(
+			"Spotify auth error:",
+			process.env.NODE_ENV === "production" ? error?.message || error : error,
+		);
 		return NextResponse.redirect(
 			new URL("/?spotify_error=auth_failed", request.url),
 		);

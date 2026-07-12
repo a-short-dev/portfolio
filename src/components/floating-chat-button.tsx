@@ -29,6 +29,16 @@ export default function FloatingChatButton() {
 	const messagesEndRef = useRef<HTMLDivElement>(null);
 	const inputRef = useRef<HTMLInputElement>(null);
 	const chatContainerRef = useRef<HTMLDivElement>(null);
+	const abortControllerRef = useRef<AbortController | null>(null);
+
+	// Dispatch custom events for state sync
+	useEffect(() => {
+		window.dispatchEvent(new CustomEvent("chat-state", { detail: { isOpen } }));
+	}, [isOpen]);
+
+	useEffect(() => {
+		window.dispatchEvent(new CustomEvent("chat-streaming", { detail: { isStreaming: isLoading } }));
+	}, [isLoading]);
 
 	// Load chat history safely on mount (hydration-safe)
 	useEffect(() => {
@@ -38,6 +48,7 @@ export default function FloatingChatButton() {
 				const parsed = JSON.parse(saved).map((msg: any) => ({
 					...msg,
 					timestamp: new Date(msg.timestamp),
+					isStreaming: false, // Clean up any active stream indicators from previous sessions
 				}));
 				if (parsed.length > 0) {
 					setMessages(parsed);
@@ -135,6 +146,12 @@ export default function FloatingChatButton() {
 		e.preventDefault();
 		if (!inputMessage.trim() || isLoading) return;
 
+		if (abortControllerRef.current) {
+			abortControllerRef.current.abort();
+		}
+		const abortController = new AbortController();
+		abortControllerRef.current = abortController;
+
 		const userMessage: Message = {
 			id: Date.now().toString(),
 			content: inputMessage,
@@ -168,7 +185,16 @@ export default function FloatingChatButton() {
 			}))
 			.filter((msg) => msg.content.trim() !== "");
 
+		let chunkTimeout: NodeJS.Timeout | null = null;
+		const resetChunkTimeout = () => {
+			if (chunkTimeout) clearTimeout(chunkTimeout);
+			chunkTimeout = setTimeout(() => {
+				abortController.abort("Stalled stream detected");
+			}, 30000); // 30s timeout
+		};
+
 		try {
+			resetChunkTimeout();
 			const response = await fetch("/api/chat", {
 				method: "POST",
 				headers: {
@@ -178,6 +204,7 @@ export default function FloatingChatButton() {
 					message: currentInput,
 					history: chatHistory,
 				}),
+				signal: abortController.signal,
 			});
 
 			if (!response.ok) {
@@ -212,6 +239,7 @@ export default function FloatingChatButton() {
 
 			if (reader) {
 				while (true) {
+					resetChunkTimeout();
 					const { done, value } = await reader.read();
 					if (done) break;
 
@@ -262,14 +290,19 @@ export default function FloatingChatButton() {
 					}
 				}
 			}
-		} catch (error) {
+		} catch (error: any) {
 			console.error("Error:", error);
+			const isAborted = error.name === "AbortError" || abortController.signal.aborted;
+			const displayError = isAborted
+				? "Connection stalled. Stream timed out. Please try again."
+				: "Connection lost. Manual protocol required.";
+
 			setMessages((prev) =>
 				prev.map((msg) =>
 					msg.id === aiMessageId
 						? {
 								...msg,
-								content: "Connection lost. Manual protocol required.",
+								content: msg.content ? msg.content + `\n\n[${displayError}]` : displayError,
 								isStreaming: false,
 								hasWhatsAppOption: true,
 							}
@@ -277,7 +310,11 @@ export default function FloatingChatButton() {
 				),
 			);
 		} finally {
+			if (chunkTimeout) clearTimeout(chunkTimeout);
 			setIsLoading(false);
+			if (abortControllerRef.current === abortController) {
+				abortControllerRef.current = null;
+			}
 			inputRef.current?.focus();
 		}
 	};

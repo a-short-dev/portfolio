@@ -3,8 +3,10 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { headers } from "next/headers";
 import { Toaster } from "sonner";
+import { headers } from "next/headers";
+import dynamic from "next/dynamic";
+import { DOMAINS, OWNER_INFO } from "@/lib/constants";
 import FloatingChatButton from "@/components/floating-chat-button";
 import SpotifyWidget from "@/components/spotify-widget";
 
@@ -32,36 +34,37 @@ const open_sans = localFont({
 });
 
 export const metadata: Metadata = {
-	metadataBase: new URL("https://oluwaleke-dev.vercel.app"),
+	metadataBase: new URL(DOMAINS.canonical),
 	title: {
-		default: "Oluwaleke Abiodun | Full Stack Software Engineer",
-		template: "%s | Oluwaleke Abiodun",
+		default: `${OWNER_INFO.name} | ${OWNER_INFO.title}`,
+		template: `%s | ${OWNER_INFO.name}`,
 	},
 	description:
-		"Polyglot software engineer specializing in React, Next.js, React Native, Node.js, and Python. Building scalable web apps, mobile apps, and backend systems.",
+		"Polyglot software engineer and founder specializing in high-performance native (Kotlin, Swift) and web (React, Next.js, Node.js, Rust) systems. Currently bootstrapping a next-generation software product.",
 	keywords: [
-		"Oluwaleke Abiodun",
-		"Full Stack Developer",
-		"Software Engineer",
+		OWNER_INFO.name,
+		OWNER_INFO.brand,
+		"Polyglot Engineer",
+		"Software Founder",
+		"Bootstrapped Startup",
+		"Co-founder Search",
 		"React Developer",
 		"Next.js Developer",
-		"React Native Developer",
-		"Node.js Developer",
+		"Kotlin Developer",
+		"Swift Developer",
+		"Rust Developer",
 		"TypeScript Developer",
+		"Node.js Developer",
 		"Python Developer",
 		"Mobile App Developer",
-		"Web Developer Nigeria",
-		"Freelance Developer",
 		"API Development",
 		"PostgreSQL",
-		"Prisma",
-		"NestJS",
 	],
 	authors: [
-		{ name: "Oluwaleke Abiodun", url: "https://oluwaleke-dev.vercel.app" },
+		{ name: OWNER_INFO.name, url: DOMAINS.canonical },
 	],
-	creator: "Oluwaleke Abiodun",
-	publisher: "Oluwaleke Abiodun",
+	creator: OWNER_INFO.name,
+	publisher: OWNER_INFO.name,
 	robots: {
 		index: true,
 		follow: true,
@@ -76,30 +79,30 @@ export const metadata: Metadata = {
 	openGraph: {
 		type: "website",
 		locale: "en_US",
-		url: "https://oluwaleke-dev.vercel.app",
-		siteName: "Oluwaleke Abiodun",
-		title: "Oluwaleke Abiodun | Full Stack Software Engineer",
+		url: DOMAINS.canonical,
+		siteName: OWNER_INFO.name,
+		title: `${OWNER_INFO.name} | ${OWNER_INFO.title}`,
 		description:
-			"Polyglot software engineer building scalable web apps, mobile apps, and backend systems with React, Next.js, and Node.js.",
+			"Polyglot software engineer building scalable native apps, web apps, and backend systems with Kotlin, Swift, React, and Rust.",
 		images: [
 			{
 				url: "/og-image.png",
 				width: 1200,
 				height: 630,
-				alt: "Oluwaleke Abiodun - Full Stack Software Engineer",
+				alt: `${OWNER_INFO.name} - ${OWNER_INFO.title}`,
 			},
 		],
 	},
 	twitter: {
 		card: "summary_large_image",
-		title: "Oluwaleke Abiodun | Full Stack Software Engineer",
+		title: `${OWNER_INFO.name} | ${OWNER_INFO.title}`,
 		description:
-			"Polyglot software engineer building scalable web apps, mobile apps, and backend systems.",
-		creator: "@a_short_dev",
+			"Polyglot software engineer building high-performance systems and bootstrapping products.",
+		creator: `@${OWNER_INFO.brand}`,
 		images: ["/og-image.png"],
 	},
 	alternates: {
-		canonical: "https://oluwaleke-dev.vercel.app",
+		canonical: DOMAINS.canonical,
 	},
 	category: "technology",
 };

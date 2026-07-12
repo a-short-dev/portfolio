@@ -11,11 +11,6 @@ import HireMeForm from "@/components/hire-me-form";
 import ProjectsSection from "@/components/projects-section";
 import SkillsSection from "@/components/skills-section";
 
-// Register GSAP plugins
-if (typeof window !== "undefined") {
-	gsap.registerPlugin(ScrollTrigger);
-}
-
 export default function HomeClient() {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const heroRef = useRef<HTMLDivElement>(null);
@@ -26,6 +21,7 @@ export default function HomeClient() {
 		if (typeof window === "undefined") return;
 
 		const ctx = gsap.context(() => {
+			gsap.registerPlugin(ScrollTrigger);
 			// Scroll-triggered animations for sections
 			gsap.utils.toArray(".section-reveal").forEach((section: any) => {
 				gsap.fromTo(
@@ -91,14 +87,14 @@ export default function HomeClient() {
 					{/* Hero Section */}
 					<HeroSection heroRef={heroRef} />
 
-					{/* Projects Section */}
-					<ProjectsSection projectsRef={projectsRef} />
+					{/* About Me Section */}
+					<AboutMeSection />
 
 					{/* Skills Section */}
 					<SkillsSection skillsRef={skillsRef} />
 
-					{/* About Me Section */}
-					<AboutMeSection />
+					{/* Projects Section */}
+					<ProjectsSection projectsRef={projectsRef} />
 
 					{/* Contact Form */}
 					<section id="contact" className="section-reveal py-32">

@@ -18,14 +18,13 @@ export default function AboutMeSection() {
 				{/* Header */}
 				<div className="mb-20 text-center">
 					<div className="inline-block py-1 px-3 mb-6 border border-accent/20 bg-accent/5 font-mono text-[10px] uppercase tracking-widest text-accent">
-						Beyond The Code
+						My Life Beyond Code
 					</div>
 					<h2 className="text-4xl md:text-6xl font-black mb-6 tracking-tighter text-white">
-						THE <span className="text-gold-gradient">HUMAN</span> ELEMENT
+						Life Beyond <span className="text-gold-gradient">Coding</span>
 					</h2>
 					<p className="text-xl text-white/50 max-w-2xl mx-auto font-light leading-relaxed">
-						While I architect digital systems by day, my creative spirit
-						manifests through other mediums.
+						When I'm not building software, I focus my energy on writing and the culinary arts.
 					</p>
 				</div>
 
@@ -45,15 +44,12 @@ export default function AboutMeSection() {
 								<FaFeatherAlt size={24} />
 							</div>
 							<h3 className="text-2xl font-bold text-white uppercase tracking-tight">
-								The Weaver
+								Creative Writing
 							</h3>
 						</div>
 
 						<p className="text-white/60 leading-relaxed mb-8">
-							As <span className="text-accent font-medium">@devweaver</span> on
-							Substack, I structure thoughts like code weaving verses that
-							explore the intersection of technology, humanity, and the
-							abstract. Writing is my compilation process for emotions.
+							Under the pen name <span className="text-accent font-medium">@devweaver</span> on Substack, I write reflections, essays, and creative pieces exploring technology, society, and modern life. Writing helps me organize my thoughts and share ideas with others.
 						</p>
 
 						<div className="flex flex-col gap-4">
@@ -64,7 +60,7 @@ export default function AboutMeSection() {
 								className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white/40 hover:text-accent transition-colors group/link"
 							>
 								<SiSubstack />
-								<span>Read My Verses</span>
+								<span>Visit my substack</span>
 								<span className="transform group-hover/link:translate-x-1 transition-transform">
 									→
 								</span>
@@ -76,7 +72,7 @@ export default function AboutMeSection() {
 								rel="noopener noreferrer"
 								className="inline-block text-[10px] border-l-2 border-accent/20 pl-3 py-1 text-white/40 hover:text-accent transition-colors font-mono italic"
 							>
-								Featured: "One Life" — A reflection on existence.
+								Featured essay: "One Life" — A reflection on existence.
 							</a>
 						</div>
 					</motion.div>
@@ -93,7 +89,7 @@ export default function AboutMeSection() {
 
 						<div className="flex items-center gap-4 mb-6 justify-end text-right">
 							<h3 className="text-2xl font-bold text-white uppercase tracking-tight">
-								The Culinarian
+								Culinary Arts
 							</h3>
 							<div className="p-3 bg-white/5 rounded-full text-accent group-hover:scale-110 transition-transform duration-300">
 								<FaUtensils size={24} />
@@ -101,15 +97,12 @@ export default function AboutMeSection() {
 						</div>
 
 						<p className="text-white/60 leading-relaxed mb-8 text-right">
-							The kitchen is my analog IDE. I trade APIs for ingredients,
-							debugging flavors instead of functions. Cooking allows me to
-							execute immediate deployment with instant feedback loops. It is
-							the "softest" side of my rigorous standards.
+							Cooking is my favorite way to step away from screens and create something with my hands. I love combining ingredients, testing flavors, and serving good meals to friends. It's my space for experimenting and unwinding.
 						</p>
 
 						<div id="cooking-placeholder" className="text-right">
 							<span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white/40 cursor-not-allowed">
-								<span>Culinary Portfolio Loading</span>
+								<span>Culinary recipes gallery coming soon</span>
 								<div className="w-1.5 h-1.5 bg-accent rounded-full animate-pulse" />
 							</span>
 						</div>
@@ -131,9 +124,7 @@ export default function AboutMeSection() {
 							<span className="text-gold-gradient font-bold not-italic">
 								Oluwaleke Abiodun
 							</span>
-							. A polyglot engineer, a weaver of words, and a curator of
-							flavors. I do not just build systems; I craft experiences that
-							endure."
+							. A software founder, a writer, and a cooking enthusiast. I build things with passion, aiming to create digital products that are helpful, beautiful, and built to last."
 						</p>
 					</div>
 				</motion.div>

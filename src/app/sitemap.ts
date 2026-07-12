@@ -1,38 +1,16 @@
 import type { MetadataRoute } from "next";
+import { DOMAINS } from "@/lib/constants";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-	const baseUrl = "https://oluwaleke.dev";
+	const baseUrl = DOMAINS.canonical;
+	const buildDate = new Date("2026-07-12T00:00:00Z");
 
 	return [
 		{
 			url: baseUrl,
-			lastModified: new Date(),
+			lastModified: buildDate,
 			changeFrequency: "weekly",
 			priority: 1,
-		},
-		{
-			url: `${baseUrl}/#projects`,
-			lastModified: new Date(),
-			changeFrequency: "weekly",
-			priority: 0.9,
-		},
-		{
-			url: `${baseUrl}/#skills-and-tools`,
-			lastModified: new Date(),
-			changeFrequency: "monthly",
-			priority: 0.8,
-		},
-		{
-			url: `${baseUrl}/#about`,
-			lastModified: new Date(),
-			changeFrequency: "monthly",
-			priority: 0.7,
-		},
-		{
-			url: `${baseUrl}/#contact`,
-			lastModified: new Date(),
-			changeFrequency: "yearly",
-			priority: 0.6,
 		},
 	];
 }

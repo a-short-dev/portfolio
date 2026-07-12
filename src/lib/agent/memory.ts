@@ -1,10 +1,6 @@
-import { Redis } from "@upstash/redis";
+import { redis } from "@/lib/redis";
 import type { AgentMemory } from "./types";
 
-const redis = new Redis({
-  url: process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL || "",
-  token: process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN || "",
-});
 const MEMORY_KEY = "portfolio:agent_memory";
 
 const defaultMemory: AgentMemory = {

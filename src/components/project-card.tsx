@@ -5,15 +5,7 @@ import Link from "next/link";
 import type React from "react";
 import { cn } from "@/lib/utils";
 
-export type ProductCardProps = {
-	title: string;
-	img: string;
-	url: string;
-	type: "contract" | "personal" | "opensource";
-	description?: string;
-	techStack?: string[];
-	status?: "completed" | "maintenance" | "ongoing";
-};
+import type { ProductCardProps } from "@/data/projects";
 
 const ProjectCard: React.FC<ProductCardProps> = ({
 	title,

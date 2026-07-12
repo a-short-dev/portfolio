@@ -35,8 +35,8 @@ interface SkillCategory {
 
 const skillData: SkillCategory[] = [
 	{
-		title: "Mobile App Engineering",
-		description: "High-performance native & cross-platform ecosystems.",
+		title: "Mobile App Development",
+		description: "Building smooth, native and cross-platform apps for iOS and Android.",
 		skills: [
 			{ name: "Kotlin", icon: <SiKotlin size={20} />, level: "Expert" },
 			{ name: "Java", icon: <FaJava size={20} />, level: "Expert" },
@@ -46,7 +46,7 @@ const skillData: SkillCategory[] = [
 	},
 	{
 		title: "Web Development",
-		description: "Scalable frontend architectures and PWAs.",
+		description: "Creating fast, responsive, and beautiful websites that look great on any screen.",
 		skills: [
 			{ name: "React", icon: <FaReact size={20} />, level: "Expert" },
 			{ name: "TypeScript", icon: <SiTypescript size={20} />, level: "Expert" },
@@ -55,8 +55,8 @@ const skillData: SkillCategory[] = [
 		],
 	},
 	{
-		title: "Backend Infrastructure",
-		description: "Secure, low-latency API layers and databases.",
+		title: "Backends & Databases",
+		description: "Setting up secure, fast servers and databases to power applications.",
 		skills: [
 			{ name: "Python", icon: <FaPython size={20} />, level: "Advanced" },
 			{ name: "Node.js", icon: <FaNodeJs size={20} />, level: "Advanced" },
@@ -69,8 +69,8 @@ const skillData: SkillCategory[] = [
 		],
 	},
 	{
-		title: "Desktop Applications",
-		description: "Cross-platform desktop solutions.",
+		title: "Desktop Apps",
+		description: "Building applications that run smoothly on Mac and Windows.",
 		skills: [
 			{ name: "Electron", icon: <SiElectron size={20} />, level: "Advanced" },
 			{ name: "SwiftUI", icon: <FaApple size={20} />, level: "Intermediate" },
@@ -111,15 +111,13 @@ export default function SkillsSection({ skillsRef }: SkillsSectionProps) {
 			<div className="max-w-7xl mx-auto relative z-10">
 				<div className="mb-20">
 					<div className="inline-block py-1 px-3 mb-6 border border-accent/20 bg-accent/5 font-mono text-[10px] uppercase tracking-widest text-accent">
-						Polyglot Proficiency
+						My Toolkit
 					</div>
 					<h2 className="text-4xl md:text-7xl font-black mb-6 tracking-tighter text-white">
-						TECHNICAL <span className="text-gold-gradient">ARSENAL</span>
+						Skills & <span className="text-gold-gradient">Expertise</span>
 					</h2>
 					<p className="text-xl text-white/50 max-w-2xl font-light leading-relaxed">
-						Mastering languages and frameworks to engineer{" "}
-						<span className="text-white font-medium">resilient</span>,{" "}
-						<span className="text-accent font-medium">agnostic</span> systems.
+						A look at the programming languages, tools, and platforms I use to bring ideas to life.
 					</p>
 				</div>
 

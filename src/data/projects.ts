@@ -17,7 +17,7 @@ export const Projects: ProductCardProps[] = [
     title: "Veris",
     description:
       "Personal startup ecosystem. Architected for scalability and high-availability.",
-    img: "/projects/veris.png",
+    img: "/projects/veris.webp",
     type: "personal",
     techStack: ["Tanstack Start", "NestJS", "TypeScript", "PostgreSQL", "LLMs"],
     status: "ongoing",
@@ -28,7 +28,7 @@ export const Projects: ProductCardProps[] = [
     title: "Moodjournal",
     description:
       "Digital well-being platform focusing on privacy and low-latency interaction.",
-    img: "/projects/moood-journal.png",
+    img: "/projects/moood-journal.webp",
     type: "personal",
     techStack: ["React Native", "TypeScript", "Supabase"],
     status: "ongoing",
@@ -39,7 +39,7 @@ export const Projects: ProductCardProps[] = [
     title: "Novoct Planet",
     description:
       "Premium fashion e-commerce platform. Full catalog, cart, and checkout system.",
-    img: "/projects/novoct.png",
+    img: "/projects/novoct.webp",
     type: "contract",
     techStack: ["Next.js", "Prisma", "PostgreSQL", "Tailwind"],
     status: "ongoing",
@@ -50,7 +50,7 @@ export const Projects: ProductCardProps[] = [
     title: "Canwee Apartments",
     description:
       "Luxury short-let property management and booking platform for Nigeria.",
-    img: "/projects/canwee-apartments.png",
+    img: "/projects/canwee-apartments.webp",
     type: "contract",
     techStack: ["Next.js", "Prisma", "PostgreSQL", "Tailwind"],
     status: "ongoing",
@@ -61,7 +61,7 @@ export const Projects: ProductCardProps[] = [
     title: "Flexiti",
     description:
       "Licensed consumer finance platform offering personal and business loans in Lagos.",
-    img: "/projects/flexiti.png",
+    img: "/projects/flexiti.webp",
     type: "contract",
     techStack: ["Next.js", "Prisma", "PostgreSQL", "Tailwind"],
     status: "completed",
@@ -72,7 +72,7 @@ export const Projects: ProductCardProps[] = [
     title: "UVO",
     description:
       "Digital billboard advertising platform with client dashboard and booking system.",
-    img: "/projects/uvo.png",
+    img: "/projects/uvo.webp",
     type: "contract",
     techStack: ["Next.js", "Prisma", "PostgreSQL", "Tailwind"],
     status: "ongoing",
@@ -83,7 +83,7 @@ export const Projects: ProductCardProps[] = [
     title: "Ubycohub",
     description:
       "High-conversion landing architecture for a tech hub ecosystem.",
-    img: "/projects/ubycohub.png",
+    img: "/projects/ubycohub.webp",
     type: "contract",
     status: "completed",
     techStack: ["React", "Tailwind", "Framer Motion"],
@@ -94,7 +94,7 @@ export const Projects: ProductCardProps[] = [
     title: "Oyo State Crime Alert",
     description:
       "Mission-critical backend and management dashboard for state security.",
-    img: "/projects/oyo-crime.png",
+    img: "/projects/oyo-crime.webp",
     type: "contract",
     techStack: ["PHP", "Laravel", "MySQL", "React"],
     status: "completed",
@@ -105,7 +105,7 @@ export const Projects: ProductCardProps[] = [
     title: "NCC Tracking System",
     description:
       "Live phone number lookup and tracking infrastructure. Optimized for speed and data throughput.",
-    img: "/projects/ncc-track.png",
+    img: "/projects/ncc-track.webp",
     type: "contract",
     techStack: ["Python", "Real-time Processing", "Big Data"],
     status: "completed",
@@ -116,7 +116,7 @@ export const Projects: ProductCardProps[] = [
     title: "Magic MediaTV",
     description:
       "Film and media production company portfolio with dynamic content showcase.",
-    img: "/projects/placeholder.png",
+    img: "/projects/placeholder.webp",
     type: "contract",
     techStack: ["Next.js", "Tailwind", "Framer Motion"],
     status: "completed",
@@ -127,7 +127,7 @@ export const Projects: ProductCardProps[] = [
     title: "Vibe Protocol",
     description:
       "Premium marketplace for code assets—fullstack apps, workflows, and design systems.",
-    img: "/projects/placeholder.png",
+    img: "/projects/placeholder.webp",
     type: "personal",
     techStack: ["Next.js", "Prisma", "PostgreSQL"],
     status: "completed",
@@ -138,7 +138,7 @@ export const Projects: ProductCardProps[] = [
     title: "Dessy Multipurpose",
     description:
       "Real estate, property development, and agricultural services company website.",
-    img: "/projects/placeholder.png",
+    img: "/projects/placeholder.webp",
     type: "contract",
     techStack: ["Next.js", "Tailwind", "TypeScript"],
     status: "completed",
@@ -149,7 +149,7 @@ export const Projects: ProductCardProps[] = [
     title: "LaundryPro",
     description:
       "AI-powered SaaS platform for laundry and dry cleaning business management.",
-    img: "/projects/placeholder.png",
+    img: "/projects/placeholder.webp",
     type: "personal",
     techStack: ["Next.js", "Prisma", "PostgreSQL", "AI"],
     status: "completed",
@@ -160,7 +160,7 @@ export const Projects: ProductCardProps[] = [
     title: "ShareSpace",
     description:
       "Fair item sharing app for roommates and families with random assignment.",
-    img: "/projects/placeholder.png",
+    img: "/projects/placeholder.webp",
     type: "personal",
     techStack: ["Next.js", "Prisma", "PostgreSQL"],
     status: "completed",

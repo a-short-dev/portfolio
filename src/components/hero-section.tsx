@@ -5,6 +5,7 @@ import Link from "next/link";
 import type React from "react";
 import { useEffect, useRef } from "react";
 import { FaGithub, FaLinkedinIn, FaXTwitter } from "react-icons/fa6";
+import { SOCIAL_LINKS, OWNER_INFO } from "@/lib/constants";
 
 interface HeroSectionProps {
 	heroRef: React.RefObject<HTMLDivElement | null>;
@@ -69,35 +70,30 @@ export default function HeroSection({ heroRef }: HeroSectionProps) {
 			>
 				<div className="mb-12 hero-animate">
 					<span className="inline-block py-2 px-4 mb-8 bg-accent/5 text-accent text-[11px] uppercase tracking-[0.3em] font-black border border-accent/20 animate-pulse-slow">
-						System_Active
+						Hello & Welcome
 					</span>
 
 					<h1
 						ref={titleRef}
 						className="text-6xl sm:text-8xl md:text-9xl font-black leading-[0.85] tracking-tighter mb-4 text-gold-gradient drop-shadow-2xl"
 					>
-						a_short_dev
+						{OWNER_INFO.brand}
 					</h1>
 
 					<h2 className="text-xl sm:text-3xl font-bold tracking-[0.2em] text-white/80 uppercase mb-8">
-						<span className="text-accent">POLYGLOT</span> ENGINEER
+						<span className="text-accent">Software</span> Creator · Founder
 					</h2>
 
 					<div className="hero-animate space-y-2">
 						<p className="text-sm sm:text-base font-mono tracking-[0.2em] uppercase text-foreground/60 w-full max-w-lg mx-auto border-t border-b border-white/5 py-4">
-							Performance • Low Memory • Security
+							Fast · Beautiful · Safe by Design
 						</p>
 					</div>
 				</div>
 
 				<div className="hero-animate max-w-2xl mx-auto space-y-12 mb-20 animate-fade-in">
 					<p className="text-xl sm:text-2xl font-light leading-relaxed text-foreground/80">
-						Designing high-performance native and web ecosystems. Focusing on
-						memory efficiency and secure architecture for
-						<span className="text-accent font-medium ml-2 border-b border-accent/20 pb-0.5">
-							scalable startups
-						</span>
-						.
+						I design fast, easy-to-use apps and modern web platforms. Currently bootstrapping an exciting new software product independently, and actively looking for a growth-focused co-founder to help launch it to a global audience.
 					</p>
 
 					<div className="flex items-center justify-center gap-6 text-[10px] font-bold tracking-widest text-foreground/40">
@@ -121,7 +117,7 @@ export default function HeroSection({ heroRef }: HeroSectionProps) {
 
 				<div className="hero-animate flex items-center justify-center gap-8">
 					<Link
-						href="https://github.com/a-short-dev"
+						href={SOCIAL_LINKS.github}
 						target="_blank"
 						className="group relative inline-flex items-center gap-3 px-8 py-4 bg-white text-black font-bold tracking-wider text-xs uppercase hover:bg-accent hover:text-white transition-all duration-300 font-mono"
 					>
@@ -131,14 +127,14 @@ export default function HeroSection({ heroRef }: HeroSectionProps) {
 
 					<div className="flex items-center gap-6">
 						<Link
-							href="https://www.linkedin.com/in/ashortdev/"
+							href={SOCIAL_LINKS.linkedin}
 							target="_blank"
 							className="text-foreground/40 hover:text-accent transition-colors duration-300"
 						>
 							<FaLinkedinIn size={24} />
 						</Link>
 						<Link
-							href="https://x.com/a_short_dev"
+							href={SOCIAL_LINKS.twitter}
 							target="_blank"
 							className="text-foreground/40 hover:text-accent transition-colors duration-300"
 						>

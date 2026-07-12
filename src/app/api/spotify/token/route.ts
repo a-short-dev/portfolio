@@ -79,8 +79,11 @@ export async function GET() {
 			{ error: "Token refresh failed" },
 			{ status: 401 },
 		);
-	} catch (error) {
-		console.error("Token endpoint error:", error);
+	} catch (error: any) {
+		console.error(
+			"Token endpoint error:",
+			process.env.NODE_ENV === "production" ? error?.message || error : error,
+		);
 		return NextResponse.json(
 			{ error: "Internal server error" },
 			{ status: 500 },

@@ -15,9 +15,9 @@
 	/* #404040 - Graphite (Subtle elements) */
 	--secondary-foreground: 0 0% 98%;
 
-	--accent: 0 0% 45%;
-	/* #737373 - Silver (Icons/Meta) */
-	--accent-foreground: 0 0% 98%;
+	--accent: 43 76% 53%;
+	/* #D4AF37 - Gold Accent */
+	--accent-foreground: 0 0% 0%;
 
 	--muted: 0 0% 9%;
 	/* #171717 - Charcoal (Card backgrounds) */
