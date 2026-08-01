@@ -1,5 +1,7 @@
-import type { NextRequest } from "next/server";
-import { redis } from "@/lib/redis";
+import type { NextRequest } from 'next/server';
+import { env } from '@/lib/env/env.next';
+import { log } from '@/lib/logger';
+import { redis } from '@/lib/redis';
 
 export const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
 export const MAX_REQUESTS_PER_WINDOW = 12;
@@ -7,14 +9,14 @@ export const MAX_MESSAGE_LENGTH = 600;
 export const MIN_MESSAGE_LENGTH = 3;
 
 export function getClientIP(request: NextRequest): string {
-	const forwarded = request.headers.get("x-forwarded-for");
-	const realIP = request.headers.get("x-real-ip");
-	const remoteAddr = request.headers.get("remote-addr");
+	const forwarded = request.headers.get('x-forwarded-for');
+	const realIP = request.headers.get('x-real-ip');
+	const remoteAddr = request.headers.get('remote-addr');
 
-	if (forwarded) return forwarded.split(",")[0].trim();
+	if (forwarded) return forwarded.split(',')[0].trim();
 	if (realIP) return realIP;
 	if (remoteAddr) return remoteAddr;
-	return "unknown";
+	return 'unknown';
 }
 
 /**
@@ -23,12 +25,12 @@ export function getClientIP(request: NextRequest): string {
  */
 export async function isRateLimited(
 	clientIP: string,
-	actionKey = "chat",
+	actionKey = 'chat',
 	limit = MAX_REQUESTS_PER_WINDOW,
-	windowMs = RATE_LIMIT_WINDOW
+	windowMs = RATE_LIMIT_WINDOW,
 ): Promise<boolean> {
 	// Skip rate limit checks in local development if redis is not configured
-	if (!process.env.KV_REST_API_URL && process.env.NODE_ENV === "development") {
+	if (!env.KV_REST_API_URL && env.NODE_ENV === 'development') {
 		return false;
 	}
 
@@ -41,7 +43,12 @@ export async function isRateLimited(
 		}
 		return count > limit;
 	} catch (error) {
-		console.error(`Rate limiting error for key ${key}:`, error);
+		const isProd = env.NODE_ENV === 'production';
+		log.error(`Rate limiting error for key ${key}:`, {
+			err: isProd
+				? new Error(error instanceof Error ? error.message : String(error))
+				: error,
+		});
 		// Fail-open: allow request if redis fails to avoid blocking legitimate traffic
 		return false;
 	}

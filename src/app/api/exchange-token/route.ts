@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 
-const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
-const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
+import { env } from "@/lib/env/env.next";
+
+const CLIENT_ID = env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
+const CLIENT_SECRET = env.SPOTIFY_CLIENT_SECRET;
 // We use a dummy URL that the user will configure in their dashboard
 const REDIRECT_URI = "https://google.com";
 

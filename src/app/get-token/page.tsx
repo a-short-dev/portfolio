@@ -1,39 +1,54 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { toast } from "sonner";
+import { useState } from 'react';
+import { toast } from 'sonner';
+import { env } from '@/lib/env/env.next';
 
 export default function GetTokenPage() {
-	const [code, setCode] = useState("");
-	const [refreshToken, setRefreshToken] = useState("");
+	const [code, setCode] = useState('');
+	const [refreshToken, setRefreshToken] = useState('');
 	const [loading, setLoading] = useState(false);
 
-	const REDIRECT_URI = "https://google.com";
-	const CLIENT_ID = "255cf95946a841f486e2cb9d200f9efb"; // Public client ID is safe to show
-	const SCOPES = "user-read-currently-playing user-read-playback-state";
+	const SCOPES = 'user-read-currently-playing user-read-playback-state';
 
-	const loginUrl = `https://accounts.spotify.com/authorize?response_type=code&client_id=${CLIENT_ID}&scope=${encodeURIComponent(SCOPES)}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`;
+	const loginUrl = `https://accounts.spotify.com/authorize?response_type=code&client_id=${env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID}&scope=${encodeURIComponent(SCOPES)}&redirect_uri=${encodeURIComponent(env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI)}`;
 
 	const handleExchange = async () => {
-		if (!code) return toast.error("Please enter the code first");
+		let cleanCode = code.trim();
+		if (!cleanCode) return toast.error('Please enter the code first');
+
+		// Automatically extract 'code' if user pasted a full URL or query string
+		try {
+			if (cleanCode.startsWith('http://') || cleanCode.startsWith('https://') || cleanCode.includes('code=')) {
+				const urlString = cleanCode.startsWith('http') ? cleanCode : `http://dummy.com?${cleanCode.replace(/^\?/, '')}`;
+				const parsedUrl = new URL(urlString);
+				const extractedCode = parsedUrl.searchParams.get('code');
+				if (extractedCode) {
+					cleanCode = extractedCode;
+				}
+			}
+		} catch {
+			// Fail silently and use fallback
+		}
+
 		setLoading(true);
 
 		try {
-			const res = await fetch("/api/exchange-token", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ code }),
+			const res = await fetch('/api/exchange-token', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ code: cleanCode }),
 			});
 			const data = await res.json();
 
 			if (data.refresh_token) {
 				setRefreshToken(data.refresh_token);
-				toast.success("Token generated!");
+				toast.success('Token generated!');
 			} else {
-				toast.error("Failed: " + JSON.stringify(data));
+				toast.error(`Failed: ${JSON.stringify(data)}`);
 			}
-		} catch (error) {
-			toast.error("Error exchanging token");
+		} catch (_error) {
+			toast.error('Error exchanging token');
 		} finally {
 			setLoading(false);
 		}
@@ -66,7 +81,7 @@ export default function GetTokenPage() {
 							Open Login Window
 						</a>
 						<p className="text-white/60 text-sm mt-2">
-							You will be redirected to Google.{" "}
+							You will be redirected to Google.{' '}
 							<strong>Copy the 'code' parameter</strong> from the address bar
 							URL.
 							<br />
@@ -88,7 +103,7 @@ export default function GetTokenPage() {
 							disabled={loading}
 							className="bg-white text-black px-6 py-2 font-bold w-full hover:bg-gray-200 disabled:opacity-50"
 						>
-							{loading ? "Exchanging..." : "Generate Refresh Token"}
+							{loading ? 'Exchanging...' : 'Generate Refresh Token'}
 						</button>
 					</div>
 

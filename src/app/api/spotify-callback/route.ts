@@ -1,35 +1,37 @@
-import { type NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from 'next/server';
 
-const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
-const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
-const REDIRECT_URI = "http://localhost:3000/api/spotify-callback";
+import { env } from "@/lib/env/env.next";
+
+const CLIENT_ID = env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
+const CLIENT_SECRET = env.SPOTIFY_CLIENT_SECRET;
+const REDIRECT_URI = env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI;
 
 export async function GET(request: NextRequest) {
 	const { searchParams } = new URL(request.url);
-	const code = searchParams.get("code");
+	const code = searchParams.get('code');
 
 	if (!code) {
-		return NextResponse.json({ error: "No code provided" }, { status: 400 });
+		return NextResponse.json({ error: 'No code provided' }, { status: 400 });
 	}
 
 	const authOptions = {
-		method: "POST",
+		method: 'POST',
 		headers: {
-			"Content-Type": "application/x-www-form-urlencoded",
+			'Content-Type': 'application/x-www-form-urlencoded',
 			Authorization:
-				"Basic " +
-				Buffer.from(CLIENT_ID + ":" + CLIENT_SECRET).toString("base64"),
+				'Basic ' +
+				Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString('base64'),
 		},
 		body: new URLSearchParams({
 			code: code,
 			redirect_uri: REDIRECT_URI,
-			grant_type: "authorization_code",
+			grant_type: 'authorization_code',
 		}),
 	};
 
 	try {
 		const response = await fetch(
-			"https://accounts.spotify.com/api/token",
+			'https://accounts.spotify.com/api/token',
 			authOptions,
 		);
 		const data = await response.json();
@@ -52,12 +54,12 @@ export async function GET(request: NextRequest) {
       </html>
       `,
 			{
-				headers: { "Content-Type": "text/html" },
+				headers: { 'Content-Type': 'text/html' },
 			},
 		);
 	} catch (error) {
 		return NextResponse.json(
-			{ error: "Failed to fetch token", details: error },
+			{ error: 'Failed to fetch token', details: error },
 			{ status: 500 },
 		);
 	}

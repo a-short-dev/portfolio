@@ -4,8 +4,10 @@ import { EmailTemplate } from "@/components/widgets/email-template";
 import { contactFormSchema } from "@/lib/validation";
 import { getClientIP, isRateLimited } from "@/lib/agent/rate-limiter";
 import { OWNER_INFO } from "@/lib/constants";
+import { env } from "@/lib/env/env.next";
+import { log } from "@/lib/logger";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(env.RESEND_API_KEY);
 
 export async function POST(req: NextRequest) {
 	const clientIP = getClientIP(req);
@@ -30,7 +32,7 @@ export async function POST(req: NextRequest) {
 
 		const { name, email, message } = parsed.data;
 
-		if (!process.env.RESEND_API_KEY) {
+		if (!env.RESEND_API_KEY) {
 			return NextResponse.json(
 				{ error: "Email service is not configured currently." },
 				{ status: 500 }
@@ -49,7 +51,7 @@ export async function POST(req: NextRequest) {
 		});
 
 		if (error) {
-			console.error("Email send API Resend error:", error);
+			log.error("Email send API Resend error:", { err: error });
 			return NextResponse.json(
 				{ error: "Failed to send the message. Please try again later." },
 				{ status: 500 }
@@ -58,7 +60,10 @@ export async function POST(req: NextRequest) {
 
 		return NextResponse.json({ success: true });
 	} catch (error: any) {
-		console.error("Email send API unexpected error:", error?.message || error);
+		const isProd = env.NODE_ENV === "production";
+		log.error("Email send API unexpected error:", {
+			err: isProd ? new Error(error?.message || String(error)) : error,
+		});
 		return NextResponse.json(
 			{ error: "An unexpected error occurred while processing your request." },
 			{ status: 500 }

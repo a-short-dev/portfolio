@@ -1,5 +1,7 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { env } from "@/lib/env/env.next";
+import { log } from "@/lib/logger";
 
 export async function GET() {
 	try {
@@ -34,7 +36,7 @@ export async function GET() {
 					headers: {
 						"Content-Type": "application/x-www-form-urlencoded",
 						Authorization: `Basic ${Buffer.from(
-							`${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`,
+							`${env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID}:${env.SPOTIFY_CLIENT_SECRET}`,
 						).toString("base64")}`,
 					},
 					body: new URLSearchParams({
@@ -53,7 +55,7 @@ export async function GET() {
 				});
 				response.cookies.set("spotify_access_token", tokenData.access_token, {
 					httpOnly: true,
-					secure: process.env.NODE_ENV === "production",
+					secure: env.NODE_ENV === "production",
 					sameSite: "lax",
 					maxAge: tokenData.expires_in,
 				});
@@ -64,7 +66,7 @@ export async function GET() {
 						tokenData.refresh_token,
 						{
 							httpOnly: true,
-							secure: process.env.NODE_ENV === "production",
+							secure: env.NODE_ENV === "production",
 							sameSite: "lax",
 							maxAge: 60 * 60 * 24 * 30, // 30 days
 						},
@@ -80,10 +82,10 @@ export async function GET() {
 			{ status: 401 },
 		);
 	} catch (error: any) {
-		console.error(
-			"Token endpoint error:",
-			process.env.NODE_ENV === "production" ? error?.message || error : error,
-		);
+		const isProd = env.NODE_ENV === "production";
+		log.error("Token endpoint error:", {
+			err: isProd ? new Error(error?.message || String(error)) : error,
+		});
 		return NextResponse.json(
 			{ error: "Internal server error" },
 			{ status: 500 },

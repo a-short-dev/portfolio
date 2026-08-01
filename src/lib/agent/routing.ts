@@ -9,9 +9,9 @@ export const MODEL_FALLBACKS: Record<string, string[]> = {
     "z-ai/glm-4.5-air:free",
     "nvidia/nemotron-3-super-120b-a12b:free",
   ],
-  "openrouter/owl-alpha": [
+  "google/gemma-2-9b-it:free": [
+    "qwen/qwen-2.5-7b-instruct:free",
     "nvidia/nemotron-nano-12b-v2-vl:free",
-    "openai/gpt-oss-120b:free",
   ],
 };
 
@@ -100,9 +100,9 @@ export function routeToModel(message: string): RouteDecision {
 
   // 3. Fallback / Standard Conversational
   return {
-    model: "openrouter/owl-alpha", // Elite conversational & general reasoning agent (Working)
+    model: "google/gemma-2-9b-it:free", // Elite conversational & general reasoning agent (Working)
     category: "general",
     explanation:
-      "Routed to OpenRouter Owl Alpha for optimal general-purpose conversation.",
+      "Routed to Gemma 2 9B for optimal general-purpose conversation.",
   };
 }

@@ -1,8 +1,10 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { env } from "@/lib/env/env.next";
+import { log } from "@/lib/logger";
 
-const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID!;
-const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET!;
-const SPOTIFY_REDIRECT_URI = process.env.SPOTIFY_REDIRECT_URI!;
+const SPOTIFY_CLIENT_ID = env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
+const SPOTIFY_CLIENT_SECRET = env.SPOTIFY_CLIENT_SECRET;
+const SPOTIFY_REDIRECT_URI = env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI;
 
 const SPOTIFY_SCOPES = [
 	"user-read-playback-state",
@@ -69,21 +71,21 @@ export async function GET(request: NextRequest) {
 		);
 		response.cookies.set("spotify_access_token", tokens.access_token, {
 			httpOnly: true,
-			secure: process.env.NODE_ENV === "production",
+			secure: env.NODE_ENV === "production",
 			maxAge: tokens.expires_in,
 		});
 		response.cookies.set("spotify_refresh_token", tokens.refresh_token, {
 			httpOnly: true,
-			secure: process.env.NODE_ENV === "production",
+			secure: env.NODE_ENV === "production",
 			maxAge: 60 * 60 * 24 * 30, // 30 days
 		});
 
 		return response;
 	} catch (error: any) {
-		console.error(
-			"Spotify auth error:",
-			process.env.NODE_ENV === "production" ? error?.message || error : error,
-		);
+		const isProd = env.NODE_ENV === "production";
+		log.error("Spotify auth error:", {
+			err: isProd ? new Error(error?.message || String(error)) : error,
+		});
 		return NextResponse.redirect(
 			new URL("/?spotify_error=auth_failed", request.url),
 		);

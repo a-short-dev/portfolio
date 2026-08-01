@@ -10,17 +10,30 @@
 	},
 	"formatter": {
 		"enabled": true,
-		"indentStyle": "tab"
+		"indentStyle": "tab",
+		"lineWidth": 80,
+		"attributePosition": "multiline"
 	},
 	"linter": {
 		"enabled": true,
 		"rules": {
 			"recommended": true
+		},
+		"domains": {
+			"next": "recommended"
 		}
 	},
 	"javascript": {
 		"formatter": {
-			"quoteStyle": "double"
+			"quoteStyle": "single"
+		}
+	},
+	"css": {
+		"linter": {
+			"enabled": true
+		},
+		"parser": {
+			"tailwindDirectives": true
 		}
 	},
 	"assist": {

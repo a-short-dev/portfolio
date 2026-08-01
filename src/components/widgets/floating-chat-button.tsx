@@ -1,29 +1,29 @@
-"use client";
+'use client';
 
-import { AnimatePresence, motion } from "framer-motion";
-import { Terminal, X } from "lucide-react";
-import type React from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
-import ChatHeader from "@/components/chat/chat-header";
-import ChatInput from "@/components/chat/chat-input";
-import ChatMessageList from "@/components/chat/chat-message-list";
-import type { Message } from "@/components/chat/types";
-import WhatsAppLeadForm from "./whatsapp-lead-form";
+import { AnimatePresence, motion } from 'framer-motion';
+import { Terminal, X } from 'lucide-react';
+import type React from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import ChatHeader from '@/components/chat/chat-header';
+import ChatInput from '@/components/chat/chat-input';
+import ChatMessageList from '@/components/chat/chat-message-list';
+import type { Message } from '@/components/chat/types';
+import WhatsAppLeadForm from './whatsapp-lead-form';
 
 export default function FloatingChatButton() {
 	const [isOpen, setIsOpen] = useState(false);
 	const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
 	const [messages, setMessages] = useState<Message[]>([
 		{
-			id: "1",
+			id: '1',
 			content:
-				"System Interface initialized. How shall we optimize your vision today?",
+				'System Interface initialized. How shall we optimize your vision today?',
 			isUser: false,
 			timestamp: new Date(),
 			hasWhatsAppOption: true,
 		},
 	]);
-	const [inputMessage, setInputMessage] = useState("");
+	const [inputMessage, setInputMessage] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
 
 	const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -33,16 +33,18 @@ export default function FloatingChatButton() {
 
 	// Dispatch custom events for state sync
 	useEffect(() => {
-		window.dispatchEvent(new CustomEvent("chat-state", { detail: { isOpen } }));
+		window.dispatchEvent(new CustomEvent('chat-state', { detail: { isOpen } }));
 	}, [isOpen]);
 
 	useEffect(() => {
-		window.dispatchEvent(new CustomEvent("chat-streaming", { detail: { isStreaming: isLoading } }));
+		window.dispatchEvent(
+			new CustomEvent('chat-streaming', { detail: { isStreaming: isLoading } }),
+		);
 	}, [isLoading]);
 
 	// Load chat history safely on mount (hydration-safe)
 	useEffect(() => {
-		const saved = localStorage.getItem("weaver_chat_history");
+		const saved = localStorage.getItem('weaver_chat_history');
 		if (saved) {
 			try {
 				const parsed = JSON.parse(saved).map((msg: any) => ({
@@ -54,19 +56,25 @@ export default function FloatingChatButton() {
 					setMessages(parsed);
 				}
 			} catch (e) {
-				console.error("Failed to load chat history:", e);
+				console.error('Failed to load chat history:', e);
 			}
 		}
 	}, []);
 
 	// Write updates to localStorage
 	useEffect(() => {
-		if (messages.length > 1 || (messages.length === 1 && messages[0].id !== "1")) {
+		if (
+			messages.length > 1 ||
+			(messages.length === 1 && messages[0].id !== '1')
+		) {
 			const messagesToSave = messages.map((msg) => ({
 				...msg,
 				isStreaming: false, // Ensure we don't persist active stream indicators
 			}));
-			localStorage.setItem("weaver_chat_history", JSON.stringify(messagesToSave));
+			localStorage.setItem(
+				'weaver_chat_history',
+				JSON.stringify(messagesToSave),
+			);
 		}
 	}, [messages]);
 
@@ -76,7 +84,8 @@ export default function FloatingChatButton() {
 
 		// If the user has scrolled up to read, do not hijack their scroll unless forced
 		const isAtBottom =
-			container.scrollHeight - container.scrollTop - container.clientHeight < 200;
+			container.scrollHeight - container.scrollTop - container.clientHeight <
+			200;
 
 		if (force || isAtBottom) {
 			requestAnimationFrame(() => {
@@ -106,8 +115,8 @@ export default function FloatingChatButton() {
 				// Ensure input stays visible when keyboard opens
 				setTimeout(() => {
 					inputRef.current?.scrollIntoView({
-						behavior: "smooth",
-						block: "nearest",
+						behavior: 'smooth',
+						block: 'nearest',
 					});
 				}, 100);
 			}
@@ -122,22 +131,22 @@ export default function FloatingChatButton() {
 
 		const inputElement = inputRef.current;
 		if (inputElement) {
-			inputElement.addEventListener("focus", handleFocus);
+			inputElement.addEventListener('focus', handleFocus);
 		}
 
-		window.addEventListener("resize", handleResize);
+		window.addEventListener('resize', handleResize);
 		// Listen for visual viewport changes (better for mobile keyboards)
 		if (window.visualViewport) {
-			window.visualViewport.addEventListener("resize", handleResize);
+			window.visualViewport.addEventListener('resize', handleResize);
 		}
 
 		return () => {
 			if (inputElement) {
-				inputElement.removeEventListener("focus", handleFocus);
+				inputElement.removeEventListener('focus', handleFocus);
 			}
-			window.removeEventListener("resize", handleResize);
+			window.removeEventListener('resize', handleResize);
 			if (window.visualViewport) {
-				window.visualViewport.removeEventListener("resize", handleResize);
+				window.visualViewport.removeEventListener('resize', handleResize);
 			}
 		};
 	}, [isOpen, scrollToBottom]);
@@ -161,13 +170,13 @@ export default function FloatingChatButton() {
 
 		setMessages((prev) => [...prev, userMessage]);
 		const currentInput = inputMessage;
-		setInputMessage("");
+		setInputMessage('');
 		setIsLoading(true);
 
 		const aiMessageId = (Date.now() + 1).toString();
 		const initialAiMessage: Message = {
 			id: aiMessageId,
-			content: "",
+			content: '',
 			isUser: false,
 			timestamp: new Date(),
 			hasWhatsAppOption: true,
@@ -180,25 +189,24 @@ export default function FloatingChatButton() {
 		// Prepare chat history payload (excluding active local state changes since setMessages is async)
 		const chatHistory = messages
 			.map((msg) => ({
-				role: msg.isUser ? "user" : "assistant",
+				role: msg.isUser ? 'user' : 'assistant',
 				content: msg.content,
 			}))
-			.filter((msg) => msg.content.trim() !== "");
+			.filter((msg) => msg.content.trim() !== '');
 
 		let chunkTimeout: NodeJS.Timeout | null = null;
 		const resetChunkTimeout = () => {
 			if (chunkTimeout) clearTimeout(chunkTimeout);
 			chunkTimeout = setTimeout(() => {
-				abortController.abort("Stalled stream detected");
+				abortController.abort('Stalled stream detected');
 			}, 30000); // 30s timeout
 		};
 
 		try {
-			resetChunkTimeout();
-			const response = await fetch("/api/chat", {
-				method: "POST",
+			const response = await fetch('/api/chat', {
+				method: 'POST',
 				headers: {
-					"Content-Type": "application/json",
+					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
 					message: currentInput,
@@ -208,7 +216,7 @@ export default function FloatingChatButton() {
 			});
 
 			if (!response.ok) {
-				let errorMessage = "Connection lost. Manual protocol required.";
+				let errorMessage = 'Connection lost. Manual protocol required.';
 				try {
 					const errorData = await response.json();
 					if (errorData?.error) {
@@ -235,24 +243,25 @@ export default function FloatingChatButton() {
 
 			const reader = response.body?.getReader();
 			const decoder = new TextDecoder();
-			let buffer = "";
+			let buffer = '';
 
 			if (reader) {
+				resetChunkTimeout();
 				while (true) {
-					resetChunkTimeout();
 					const { done, value } = await reader.read();
 					if (done) break;
+					resetChunkTimeout();
 
 					buffer += decoder.decode(value, { stream: true });
-					const lines = buffer.split("\n");
-					buffer = lines.pop() || "";
+					const lines = buffer.split('\n');
+					buffer = lines.pop() || '';
 
 					for (const line of lines) {
-						if (line.startsWith("data: ")) {
+						if (line.startsWith('data: ')) {
 							try {
 								const data = JSON.parse(line.slice(6));
 
-								if (data.type === "stats") {
+								if (data.type === 'stats') {
 									setMessages((prev) =>
 										prev.map((msg) =>
 											msg.id === aiMessageId
@@ -260,7 +269,7 @@ export default function FloatingChatButton() {
 												: msg,
 										),
 									);
-								} else if (data.type === "content") {
+								} else if (data.type === 'content') {
 									setMessages((prev) =>
 										prev.map((msg) =>
 											msg.id === aiMessageId
@@ -268,7 +277,7 @@ export default function FloatingChatButton() {
 												: msg,
 										),
 									);
-								} else if (data.type === "final_stats") {
+								} else if (data.type === 'final_stats') {
 									setMessages((prev) =>
 										prev.map((msg) =>
 											msg.id === aiMessageId
@@ -280,29 +289,32 @@ export default function FloatingChatButton() {
 												: msg,
 										),
 									);
-								} else if (data.type === "error") {
+								} else if (data.type === 'error') {
 									throw new Error(data.data.message);
 								}
 							} catch (parseError) {
-								console.error("Error parsing SSE data:", parseError);
+								console.error('Error parsing SSE data:', parseError);
 							}
 						}
 					}
 				}
 			}
 		} catch (error: any) {
-			console.error("Error:", error);
-			const isAborted = error.name === "AbortError" || abortController.signal.aborted;
+			console.error('Error:', error);
+			const isAborted =
+				error.name === 'AbortError' || abortController.signal.aborted;
 			const displayError = isAborted
-				? "Connection stalled. Stream timed out. Please try again."
-				: "Connection lost. Manual protocol required.";
+				? 'Connection stalled. Stream timed out. Please try again.'
+				: 'Connection lost. Manual protocol required.';
 
 			setMessages((prev) =>
 				prev.map((msg) =>
 					msg.id === aiMessageId
 						? {
 								...msg,
-								content: msg.content ? msg.content + `\n\n[${displayError}]` : displayError,
+								content: msg.content
+									? `${msg.content}\n\n[${displayError}]`
+									: displayError,
 								isStreaming: false,
 								hasWhatsAppOption: true,
 							}
@@ -335,7 +347,7 @@ export default function FloatingChatButton() {
 				className="fixed bottom-6 right-6 z-50"
 				initial={{ scale: 0, rotate: -45 }}
 				animate={{ scale: 1, rotate: 0 }}
-				transition={{ type: "spring", stiffness: 260, damping: 20 }}
+				transition={{ type: 'spring', stiffness: 260, damping: 20 }}
 			>
 				<motion.button
 					onClick={() => setIsOpen(!isOpen)}
@@ -360,7 +372,7 @@ export default function FloatingChatButton() {
 						initial={{ opacity: 0, scale: 0.95, y: 40, x: 20 }}
 						animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
 						exit={{ opacity: 0, scale: 0.95, y: 40, x: 20 }}
-						transition={{ type: "spring", stiffness: 300, damping: 30 }}
+						transition={{ type: 'spring', stiffness: 300, damping: 30 }}
 						className="fixed inset-0 sm:bottom-24 sm:right-6 sm:left-auto sm:top-auto w-full h-[100dvh] sm:h-[450px] md:h-[550px] sm:w-80 md:w-[480px] bg-black border-y sm:border border-[#E2B53E]/20 sm:rounded-2xl shadow-[0_20px_50px_rgba(226,181,62,0.08)] z-50 overflow-hidden flex flex-col font-mono"
 					>
 						<ChatHeader onClose={() => setIsOpen(false)} />

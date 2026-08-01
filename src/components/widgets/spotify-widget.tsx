@@ -1,10 +1,8 @@
-"use client";
+'use client';
 
-import { motion } from "framer-motion";
-import { Disc } from "lucide-react";
-import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
+import { Disc } from 'lucide-react';
+import Image from 'next/image';
+import { useCallback, useEffect, useState } from 'react';
 
 interface SpotifyTrack {
 	name: string;
@@ -26,7 +24,7 @@ const SpotifyWidget = () => {
 
 	const fetchSpotifyData = useCallback(async () => {
 		try {
-			const res = await fetch("/api/spotify/current");
+			const res = await fetch('/api/spotify/current');
 			if (!res.ok) return;
 
 			const data = await res.json();
@@ -46,7 +44,7 @@ const SpotifyWidget = () => {
 				setCurrentTrack(null);
 			}
 		} catch (error) {
-			console.error("Failed to fetch Spotify status", error);
+			console.error('Failed to fetch Spotify status', error);
 		}
 	}, []);
 
@@ -66,18 +64,18 @@ const SpotifyWidget = () => {
 			setIsMobile(window.innerWidth < 640);
 		};
 
-		window.addEventListener("chat-state", handleChatState);
-		window.addEventListener("chat-streaming", handleChatStreaming);
-		window.addEventListener("resize", handleResize);
+		window.addEventListener('chat-state', handleChatState);
+		window.addEventListener('chat-streaming', handleChatStreaming);
+		window.addEventListener('resize', handleResize);
 		handleResize();
 
 		// Fetch initial data once on mount regardless of expansion state
 		fetchSpotifyData();
 
 		return () => {
-			window.removeEventListener("chat-state", handleChatState);
-			window.removeEventListener("chat-streaming", handleChatStreaming);
-			window.removeEventListener("resize", handleResize);
+			window.removeEventListener('chat-state', handleChatState);
+			window.removeEventListener('chat-streaming', handleChatStreaming);
+			window.removeEventListener('resize', handleResize);
 		};
 	}, [fetchSpotifyData]);
 
@@ -92,7 +90,7 @@ const SpotifyWidget = () => {
 	const formatTime = (ms: number) => {
 		const minutes = Math.floor(ms / 60000);
 		const seconds = Math.floor((ms % 60000) / 1000);
-		return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+		return `${minutes}:${seconds.toString().padStart(2, '0')}`;
 	};
 
 	const progressPercentage = currentTrack
@@ -126,17 +124,20 @@ const SpotifyWidget = () => {
 
 	return (
 		<div className="fixed bottom-6 left-6 z-40 animate-fade-in">
-			<style dangerouslySetInnerHTML={{ __html: `
+			<style
+				dangerouslySetInnerHTML={{
+					__html: `
 				@keyframes playing-bar-1 { 0%, 100% { height: 10%; } 50% { height: 80%; } }
 				@keyframes playing-bar-2 { 0%, 100% { height: 20%; } 50% { height: 95%; } }
 				@keyframes playing-bar-3 { 0%, 100% { height: 15%; } 50% { height: 60%; } }
 				.animate-bar-1 { animation: playing-bar-1 1s ease-in-out infinite; }
 				.animate-bar-2 { animation: playing-bar-2 1.2s ease-in-out infinite; }
 				.animate-bar-3 { animation: playing-bar-3 0.8s ease-in-out infinite; }
-			`}} />
+			`,
+				}}
+			/>
 
 			<div className="bg-black border border-white/10 transition-all duration-500 shadow-2xl text-left outline-none group overflow-hidden relative w-80 rounded-sm p-6 border-[#1DB954]/20 shadow-[0_0_30px_rgba(0,0,0,0.8)]">
-				
 				{/* Close Button HUD */}
 				<button
 					type="button"
@@ -150,14 +151,19 @@ const SpotifyWidget = () => {
 				{/* Alive Visualizer Background (Subtle) */}
 				<div className="absolute bottom-0 right-0 left-0 h-16 flex items-end justify-between px-6 opacity-20 pointer-events-none">
 					{bars.map((bar) => {
-						const animClass = bar % 3 === 0 ? "animate-bar-1" : bar % 3 === 1 ? "animate-bar-2" : "animate-bar-3";
+						const animClass =
+							bar % 3 === 0
+								? 'animate-bar-1'
+								: bar % 3 === 1
+									? 'animate-bar-2'
+									: 'animate-bar-3';
 						return (
 							<div
 								key={bar}
 								className={`w-1 bg-[#1DB954] ${animClass}`}
 								style={{
 									animationDelay: `${bar * 0.08}s`,
-									height: "20%"
+									height: '20%',
 								}}
 							/>
 						);
@@ -234,8 +240,14 @@ const SpotifyWidget = () => {
 										<>
 											<div className="flex gap-1">
 												<div className="w-0.5 h-3 bg-[#1DB954] animate-bar-1" />
-												<div className="w-0.5 h-3 bg-[#1DB954] animate-bar-2" style={{ animationDelay: "0.2s" }} />
-												<div className="w-0.5 h-3 bg-[#1DB954] animate-bar-3" style={{ animationDelay: "0.4s" }} />
+												<div
+													className="w-0.5 h-3 bg-[#1DB954] animate-bar-2"
+													style={{ animationDelay: '0.2s' }}
+												/>
+												<div
+													className="w-0.5 h-3 bg-[#1DB954] animate-bar-3"
+													style={{ animationDelay: '0.4s' }}
+												/>
 											</div>
 											<span className="text-[9px] font-mono text-[#1DB954]/60 uppercase tracking-wider">
 												Now Playing

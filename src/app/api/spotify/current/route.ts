@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 
-const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID!;
-const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET!;
+import { env } from "@/lib/env/env.next";
+import { log } from "@/lib/logger";
 
-const SPOTIFY_REFRESH_TOKEN = process.env.SPOTIFY_REFRESH_TOKEN;
+const SPOTIFY_CLIENT_ID = env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
+const SPOTIFY_CLIENT_SECRET = env.SPOTIFY_CLIENT_SECRET;
+
+const SPOTIFY_REFRESH_TOKEN = env.SPOTIFY_REFRESH_TOKEN;
 const BASIC_AUTH = Buffer.from(
   `${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`,
 ).toString("base64");
@@ -14,12 +17,12 @@ const NOW_PLAYING_ENDPOINT =
 
 async function getAccessToken() {
   if (!SPOTIFY_REFRESH_TOKEN) {
-    console.error("SPOTIFY_REFRESH_TOKEN is missing");
+    log.error("SPOTIFY_REFRESH_TOKEN is missing");
     return null;
   }
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 2000); // Strict 2s timeout
+  const timeoutId = setTimeout(() => controller.abort(), 5000);
 
   try {
     const response = await fetch(TOKEN_ENDPOINT, {
@@ -41,9 +44,9 @@ async function getAccessToken() {
     if (!response.ok) {
       const text = await response.text();
       const isHtml = text.trim().startsWith("<");
-      console.warn(
+      log.warn(
         `[Spotify] Failed to refresh token (Status: ${response.status}):`,
-        isHtml ? "Upstream API server error (HTML)" : text.slice(0, 150),
+        { err: new Error(isHtml ? "Upstream API server error (HTML)" : text.slice(0, 150)) }
       );
       return null;
     }
@@ -52,7 +55,7 @@ async function getAccessToken() {
     return data.access_token;
   } catch (err) {
     clearTimeout(timeoutId);
-    console.warn("[Spotify] Token refresh failed or timed out:", err instanceof Error ? err.message : err);
+    log.warn("[Spotify] Token refresh failed or timed out:", { err });
     return null;
   }
 }
@@ -70,7 +73,7 @@ export async function GET() {
     }
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 2000); // Strict 2s timeout
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
 
     const response = await fetch(NOW_PLAYING_ENDPOINT, {
       headers: {
@@ -114,7 +117,7 @@ export async function GET() {
       durationMs,
     });
   } catch (error) {
-    console.warn("Spotify status fetch failed or timed out:", error instanceof Error ? error.message : error);
+    log.warn("Spotify status fetch failed or timed out:", { err: error });
     return NextResponse.json({ isPlaying: false });
   }
 }
