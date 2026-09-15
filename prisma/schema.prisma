@@ -13,8 +13,8 @@ datasource db {
 }
 
 model User {
-  id       BigInt @id @default(autoincrement())
-  publicId String @unique @default(uuid(7)) @db.Uuid
+  id       BigInt @id @default(autoincrement()) @db.BigInt
+  publicId String @unique @default(uuid(7)) @db.Uuid @map("public_id")
 
   @@map("users")
 }

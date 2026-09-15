@@ -1,24 +1,23 @@
 'use client'
 
-import * as React from 'react'
-import { cn } from 'cn'
 import {
+	ArrowDownIcon,
+	ArrowLeftIcon,
+	ArrowRightIcon,
+} from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { cn } from 'cn'
+import * as React from 'react'
+import {
+	type DayButton,
 	DayPicker,
 	getDefaultClassNames,
-	type DayButton,
 	type Locale,
 } from 'react-day-picker'
-
 import {
 	Button,
 	buttonVariants,
 } from '@/shared/components/ui/button'
-import { HugeiconsIcon } from '@hugeicons/react'
-import {
-	ArrowLeftIcon,
-	ArrowRightIcon,
-	ArrowDownIcon,
-} from '@hugeicons/core-free-icons'
 
 function Calendar({
 	className,
