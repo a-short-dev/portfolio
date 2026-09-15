@@ -1,1 +1,0 @@
-ALTER TABLE "projects" ALTER COLUMN "name" SET DATA TYPE text USING "name"::text;
